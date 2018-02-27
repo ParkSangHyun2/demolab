@@ -1,9 +1,17 @@
 package fxui.pane;
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import fxui.Session;
 import fxui.event.LoginEventHelper;
 import fxui.util.AlertBox;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -12,21 +20,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class LoginPane {
 	//
 	private Stage window;
 	private BorderPane mainLayout;
-	
-	private Label titleLabel;
-	private 	Label emailLabel;
-	private Label nameLabel;
-	private TextField emailField;
-	private TextField nameField;
-	private Button loginBtn;
-	private Button signupBtn;
 	
 	LoginEventHelper loginEventHelper;
 	
@@ -35,61 +37,148 @@ public class LoginPane {
 		this.window = window;
 		this.mainLayout = mainLayout;
 		loginEventHelper = new LoginEventHelper();
-		
-		titleLabel = new Label("Login");
-		emailLabel = new Label("E-mail");
-		nameLabel = new Label("Name");
-		emailField = new TextField();
-		nameField = new TextField();
-		loginBtn = new Button("Login");
-		signupBtn = new Button("SignUp");
 	}
 	
 	public Pane initLoginPane() {
 		//
-		GridPane contentsLayout = new GridPane();
-			
-		HBox btnBox = new HBox();
-		btnBox.getChildren().addAll(loginBtn, signupBtn);
-		btnBox.setSpacing(20);
-		btnBox.setAlignment(Pos.CENTER);
+		Label titleLabel = new Label("Login");
+		Label emailLabel = new Label("E-mail");
+		Label nameLabel = new Label("Name");
+		TextField emailField = new TextField();
+		TextField nameField = new TextField();
+		Button loginBtn = new Button("Login");
+		Button signupBtn = new Button("SignUp");
+		
+		Map<String, Node> valueNodes = new LinkedHashMap<String, Node>();
+		valueNodes.put("emailField", emailField);
+		valueNodes.put("nameField", nameField);
 		
 		StackPane titlePane = new StackPane();
 		titlePane.getChildren().add(titleLabel);
-		titlePane.setAlignment(Pos.CENTER);
+		titlePane.setAlignment(Pos.BASELINE_CENTER);
 		
 		titleLabel.setFont(Font.font(30));
 		
+		GridPane contentsLayout = new GridPane();
 		contentsLayout.add(titlePane, 1, 0);
 		contentsLayout.add(emailLabel, 0, 1);
 		contentsLayout.add(nameLabel, 0, 2);
 		contentsLayout.add(emailField, 1, 1);
 		contentsLayout.add(nameField, 1, 2);
-		contentsLayout.add(btnBox, 1, 3);
-		
 		contentsLayout.setHgap(20);
 		contentsLayout.setVgap(10);
-
-		contentsLayout.setAlignment(Pos.CENTER);
+		contentsLayout.setAlignment(Pos.BASELINE_CENTER);
 		
-		this.evokeEvent();
+		HBox btnBox = new HBox();
+		btnBox.getChildren().addAll(loginBtn, signupBtn);
+		btnBox.setSpacing(20);
+		btnBox.setAlignment(Pos.CENTER);
 		
-		return contentsLayout;
+		VBox mainLayout = new VBox();
+		mainLayout.getChildren().addAll(titlePane,contentsLayout,btnBox);
+		mainLayout.setAlignment(Pos.CENTER);
+		mainLayout.setPadding(new Insets(10));
+		mainLayout.setSpacing(10);
+		
+		this.setLoginEvents(valueNodes, loginBtn, signupBtn);
+		
+		return mainLayout;
 	}
 	
-	private void evokeEvent() {
+	public void createSignupStage() {
+		//
+		Label titleLabel = new Label("Sign Up");
+		titleLabel.setFont(new Font(30));
+		Label emailLabel = new Label("E-mail");
+		Label nameLabel = new Label("Name");
+		Label phoneLabel = new Label("PhoneNumber");
+		TextField emailField = new TextField();
+		TextField nameField = new TextField();
+		TextField phoneField = new TextField();
+		Button confirmBtn = new Button("Confirm");
+		Button cancelBtn = new Button("Cancel");
+		
+		Map<String,Node> valueNodes = new LinkedHashMap<String, Node>();
+		
+		valueNodes.put("emailField", emailField);
+		valueNodes.put("nameField", nameField);
+		valueNodes.put("phoneField", phoneField);
+		
+		StackPane titleLayout = new StackPane();
+		titleLayout.getChildren().add(titleLabel);
+		
+		GridPane contentsLayout = new GridPane();
+		contentsLayout.setVgap(10);
+		contentsLayout.setHgap(10);
+		contentsLayout.add(emailLabel, 0, 0);
+		contentsLayout.add(nameLabel, 0, 1);
+		contentsLayout.add(phoneLabel, 0, 2);
+		contentsLayout.add(emailField, 1, 0);
+		contentsLayout.add(nameField, 1, 1);
+		contentsLayout.add(phoneField, 1, 2);
+		
+		HBox btnLayout = new HBox();
+		btnLayout.setSpacing(10);
+		btnLayout.setAlignment(Pos.BASELINE_CENTER);
+		btnLayout.getChildren().addAll(confirmBtn, cancelBtn);
+		
+		VBox mainLayout = new VBox();
+		mainLayout.setSpacing(20);
+		mainLayout.setPadding(new Insets(10));
+		mainLayout.getChildren().addAll(titleLayout, contentsLayout, btnLayout);
+		
+		Scene scene = new Scene(mainLayout);
+		
+		Stage popupStage = new Stage();
+		
+		this.setSignupEvents(popupStage, valueNodes, confirmBtn, cancelBtn);
+		
+		popupStage.setScene(scene);
+		popupStage.initModality(Modality.APPLICATION_MODAL);
+		popupStage.setResizable(false);
+		popupStage.show();
+	}
+	
+	private void setLoginEvents(Map<String, Node> valueNodes, Button loginBtn, Button signupBtn) {
 		loginBtn.setOnAction(e ->{
 			//
-			if(loginEventHelper.login()) {
+			Map<String, String> values = new LinkedHashMap<String, String>();
+			values.put("email", ((TextField)valueNodes.get("emailField")).getText());
+			values.put("name", ((TextField)valueNodes.get("nameField")).getText());
+			
+			if(loginEventHelper.login(values)) {
+				Session.putMemberInSession(values);
 				mainLayout.getTop().setDisable(false);
+				Stage primaryStage = (Stage) mainLayout.getScene().getWindow();//temp
+				ClubPane clubPane = new ClubPane(values);
+				clubPane.showMyClubScene();
 				//다음씬으로 이동-> 첫화면 : 나의클럽정보
 			}else {
+				mainLayout.getTop().setDisable(true);
 				AlertBox.alert("Login Failed", "Please check");
 			}
 		});
 		
 		signupBtn.setOnAction(e ->{
 			// 회원가입팝업스테이지작성.
+			this.createSignupStage();
+		});
+	}
+	
+	private void setSignupEvents(Stage stage, Map<String, Node> valueNodes,Button confirmBtn, Button cancelBtn) {
+		//
+		confirmBtn.setOnAction(e ->{
+			//
+			Map<String,String> values = new LinkedHashMap<String,String>();
+			values.put("email", ((TextField)valueNodes.get("emailField")).getText());
+			values.put("name", ((TextField)valueNodes.get("nameField")).getText());
+			values.put("phone", ((TextField)valueNodes.get("phoneField")).getText());
+			
+			loginEventHelper.signupMember(values);
+		});
+		
+		cancelBtn.setOnAction(e ->{
+			stage.close();
 		});
 	}
 }

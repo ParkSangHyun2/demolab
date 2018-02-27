@@ -13,7 +13,7 @@ public class TravelClubFx extends Application {
 	private BorderPane mainLayout;
 	private Scene scene;
 
-	private InitialStage initialStage;
+	private PrimaryScene primaryScene;
 
 	public TravelClubFx() {
 		//
@@ -23,16 +23,14 @@ public class TravelClubFx extends Application {
 		window.setMinHeight(550);
 		window.setMinWidth(600);
 		mainLayout = new BorderPane();
-		initialStage = new InitialStage(window, mainLayout);
+		primaryScene = new PrimaryScene(window, mainLayout);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		//
-		scene = new Scene(initialStage.createInitialStage());
+		scene = new Scene(primaryScene.createInitialPane());
 		//scene.X
-		
-		StageCreator loginStage = new StageCreator();
 		
 		window.setScene(scene);
 		window.showAndWait();
