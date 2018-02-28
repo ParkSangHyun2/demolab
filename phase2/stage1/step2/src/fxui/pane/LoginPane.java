@@ -4,6 +4,7 @@ package fxui.pane;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import fxui.PrimaryScene;
 import fxui.Session;
 import fxui.event.LoginEventHelper;
 import fxui.util.AlertBox;
@@ -149,6 +150,7 @@ public class LoginPane {
 				mainLayout.getTop().setDisable(false);
 				//Stage primaryStage = (Stage) mainLayout.getScene().getWindow();//temp
 				ClubPane clubPane = new ClubPane(Session.loggedInMemberEmail, Session.loggedInMemberName);
+				PrimaryScene.defineLoggedInUser(Session.loggedInMemberName);
 				clubPane.showMyClubScene();
 				//다음씬으로 이동-> 첫화면 : 나의클럽정보
 			}else {
@@ -167,12 +169,13 @@ public class LoginPane {
 		//
 		confirmBtn.setOnAction(e ->{
 			//
-			Map<String,String> values = new LinkedHashMap<String,String>();
 			String email = ((TextField)valueNodes.get("emailField")).getText();
 			String name =  ((TextField)valueNodes.get("nameField")).getText();
 			String phoneNumber = ((TextField)valueNodes.get("phoneField")).getText();
 			
 			loginEventHelper.signupMember(email, name, phoneNumber);
+			AlertBox.alert("Success", "Registed!");
+			stage.close();
 		});
 		
 		cancelBtn.setOnAction(e ->{

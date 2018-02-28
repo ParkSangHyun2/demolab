@@ -1,5 +1,6 @@
 package fxui.pane;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import fxui.PrimaryScene;
 import fxui.event.BoardEventHelper;
 import fxui.event.ClubEventHelper;
 import fxui.util.ConfirmBox;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -128,7 +130,7 @@ public class ClubPane {
 		
 		clubTable.getColumns().addAll(nameColumn, introduceColumn, foundationDayColumn);
 		//테이블 내용 불러와야함.
-		//myClubTable.setItems(value);
+		
 		
 		tableLayout.getChildren().add(clubTable);
 		
@@ -141,11 +143,11 @@ public class ClubPane {
 		mainLayout.setPadding(new Insets(10));
 		mainLayout.setSpacing(10);
 		
-		this.setSearchClubEvent(clubTable, searchField,searchBtn, searchAllBtn, joinBtn);
+		this.setSearchClubEvent(clubTable, searchField, searchBtn, searchAllBtn, joinBtn);
 		
 		PrimaryScene.changeScene(mainLayout);
 	}
-	
+
 	public void showCreateClubScene() {
 		// 팝업창.
 		Label titleLabel = new Label("New TravelClub");
@@ -227,14 +229,13 @@ public class ClubPane {
 	private void setSearchClubEvent(TableView<TravelClubDto> clubTable, 
 			TextField searchField, Button searchBtn, Button searchAllBtn, Button joinBtn) {
 		//
-		String clubName = searchField.getText();
-		
 		searchBtn.setOnAction(e ->{
-			clubEvents.searchClub(clubName);
+			String clubName = searchField.getText();
+			clubEvents.searchClub(clubName, clubTable);
 		});
 		
 		searchAllBtn.setOnAction(e ->{
-			clubEvents.searchAllClub();
+			clubEvents.searchAllClub(clubTable);
 		});
 		
 		joinBtn.setOnAction(e ->{
@@ -262,7 +263,7 @@ public class ClubPane {
 			String clubIntroduce = ((TextField)valueNodes.get("clubIntroduceField")).getText();
 			
 			clubEvents.createClub(clubName, clubIntroduce);
-			
+			popupStage.close();
 			//클럽생성시 보드도함께 생성해야함.
 		});
 	}

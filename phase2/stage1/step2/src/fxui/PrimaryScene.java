@@ -59,7 +59,7 @@ public class PrimaryScene {
 		mainLayout.setTop(menuBar);
 		mainLayout.setCenter(loginPane.initLoginPane());
 		mainLayout.getTop().setDisable(true);
-		mainLayout.setBottom(this.markOnUser("Undefined User"));
+		mainLayout.setBottom(markOnUser("Undefined User"));
 		
 		menuBar.setDisable(true);
 		
@@ -68,7 +68,7 @@ public class PrimaryScene {
 	
 	private static Pane markOnUser(String name) {
 		StackPane bottomLayout = new StackPane();
-		Label loggedUser = new Label("Undefined User");
+		Label loggedUser = new Label(name);
 		loggedUser.setTextFill(Color.GRAY);
 		bottomLayout.getChildren().add(loggedUser);
 		return bottomLayout;

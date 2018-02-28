@@ -96,6 +96,10 @@ public class MemberDto {
 		return builder.toString(); 
 	}
 	
+	public void addMemebershipList(ClubMembershipDto membershipDto) {
+		membershipList.add(membershipDto);
+	}
+	
 	public List<Address> getAddresses() {
 		return addresses;
 	}
