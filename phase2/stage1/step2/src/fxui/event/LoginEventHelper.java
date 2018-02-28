@@ -3,14 +3,14 @@ package fxui.event;
 import java.util.ArrayList;
 import java.util.Map;
 
+import fxui.util.AlertBox;
+
 public class LoginEventHelper {
 	//
 	//MemberService memberService = new MemberServiceLogic();
 
-	public boolean login(Map<String, String> values) {
+	public boolean login(String email, String name) {
 		//
-//		String email = values.get("email");
-//		String name = values.get("name");
 //		for(MemeberDto member : memberService.findByName(name)) {
 //			if(member.getEmail().equals(name)) {
 //				return true;
@@ -20,12 +20,9 @@ public class LoginEventHelper {
 		return true;
 	}
 
-	public void signupMember(Map<String, String> values) {
+	public void signupMember(String email, String name, String phone) {
 		//
-		
-		String email = values.get("email");
-		String name = values.get("name");
-		String phoneNumber = values.get("phone");
+		AlertBox.alert("Info", "Press SignupBtn");
 		//memberService.register(new MemberDto(email, name, phoneNumber));
 	}
 

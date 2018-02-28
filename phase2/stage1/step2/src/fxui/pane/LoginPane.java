@@ -1,7 +1,6 @@
 package fxui.pane;
 
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -142,15 +141,14 @@ public class LoginPane {
 	private void setLoginEvents(Map<String, Node> valueNodes, Button loginBtn, Button signupBtn) {
 		loginBtn.setOnAction(e ->{
 			//
-			Map<String, String> values = new LinkedHashMap<String, String>();
-			values.put("email", ((TextField)valueNodes.get("emailField")).getText());
-			values.put("name", ((TextField)valueNodes.get("nameField")).getText());
+			String email = ((TextField)valueNodes.get("emailField")).getText();
+			String name = ((TextField)valueNodes.get("nameField")).getText();
 			
-			if(loginEventHelper.login(values)) {
-				Session.putMemberInSession(values);
+			if(loginEventHelper.login(email, name)) {
+				Session.putMemberInSession(email, name);
 				mainLayout.getTop().setDisable(false);
-				Stage primaryStage = (Stage) mainLayout.getScene().getWindow();//temp
-				ClubPane clubPane = new ClubPane(values);
+				//Stage primaryStage = (Stage) mainLayout.getScene().getWindow();//temp
+				ClubPane clubPane = new ClubPane(Session.loggedInMemberEmail, Session.loggedInMemberName);
 				clubPane.showMyClubScene();
 				//다음씬으로 이동-> 첫화면 : 나의클럽정보
 			}else {
@@ -170,11 +168,11 @@ public class LoginPane {
 		confirmBtn.setOnAction(e ->{
 			//
 			Map<String,String> values = new LinkedHashMap<String,String>();
-			values.put("email", ((TextField)valueNodes.get("emailField")).getText());
-			values.put("name", ((TextField)valueNodes.get("nameField")).getText());
-			values.put("phone", ((TextField)valueNodes.get("phoneField")).getText());
+			String email = ((TextField)valueNodes.get("emailField")).getText();
+			String name =  ((TextField)valueNodes.get("nameField")).getText();
+			String phoneNumber = ((TextField)valueNodes.get("phoneField")).getText();
 			
-			loginEventHelper.signupMember(values);
+			loginEventHelper.signupMember(email, name, phoneNumber);
 		});
 		
 		cancelBtn.setOnAction(e ->{

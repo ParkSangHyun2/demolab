@@ -1,14 +1,13 @@
 package fxui;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 public class Session {
 	//
-	public static Map<String, String> loggedInMember = new LinkedHashMap<String,String>();;
+	public static String loggedInMemberEmail;
+	public static String loggedInMemberName;
 	
-	public static void putMemberInSession(Map<String, String> member) {
+	public static void putMemberInSession(String email, String name) {
 		//
-		loggedInMember = member; 
+		loggedInMemberEmail= email;
+		loggedInMemberName = name;
 	}
 }

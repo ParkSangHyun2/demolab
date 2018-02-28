@@ -20,10 +20,10 @@ public class AlertBox {//
 	Button closeBtn;
 		
 	stage = new Stage();
-	stage.setMinWidth(150);
-	stage.setMaxHeight(90);
-	stage.setMinHeight(150);
-	stage.setMaxWidth(90);
+//	stage.setMinWidth(150);
+//	stage.setMaxHeight(90);
+//	stage.setMinHeight(150);
+//	stage.setMaxWidth(90);
 	stage.initModality(Modality.APPLICATION_MODAL);
 	
 	stage.setTitle(title);
@@ -37,7 +37,7 @@ public class AlertBox {//
 	layout.setAlignment(Pos.BOTTOM_CENTER);
 	layout.setPadding(new Insets(10));
 
-	scene = new Scene(layout, 150 ,90);
+	scene = new Scene(layout);
 	
 	stage.setScene(scene);
 	stage.showAndWait();
