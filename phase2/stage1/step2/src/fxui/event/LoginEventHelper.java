@@ -1,8 +1,5 @@
 package fxui.event;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import fxui.util.AlertBox;
 
 public class LoginEventHelper {

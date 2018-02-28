@@ -5,9 +5,11 @@ import java.util.Map;
 
 import entity.dto.TravelClubDto;
 import fxui.PrimaryScene;
+import fxui.event.BoardEventHelper;
 import fxui.event.ClubEventHelper;
 import fxui.util.ConfirmBox;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -32,6 +35,7 @@ public class ClubPane {
 	private String loggedInMemberEmail;
 	
 	private ClubEventHelper clubEvents;
+	private BoardEventHelper boardEvents;
 	
 	public ClubPane(String email, String name) {
 		//
@@ -39,6 +43,7 @@ public class ClubPane {
 		this.loggedInMemberName = name;
 		
 		this.clubEvents = new ClubEventHelper();
+		this.boardEvents = new BoardEventHelper();
 	}
 
 	public void showMyClubScene() {
@@ -202,6 +207,21 @@ public class ClubPane {
 				selectedItem.forEach(allItem::remove);
 			}
 		});
+		
+		myClubTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				//
+				if(event.getClickCount() > 1) {
+					ObservableList<TravelClubDto> selectedItem;
+					selectedItem = myClubTable.getSelectionModel().getSelectedItems();
+					TravelClubDto travelClub= selectedItem.iterator().next();
+					boardEvents.showPostings(travelClub);
+				}
+			}
+			
+		});
 	}
 	
 	private void setSearchClubEvent(TableView<TravelClubDto> clubTable, 
@@ -242,6 +262,8 @@ public class ClubPane {
 			String clubIntroduce = ((TextField)valueNodes.get("clubIntroduceField")).getText();
 			
 			clubEvents.createClub(clubName, clubIntroduce);
+			
+			//클럽생성시 보드도함께 생성해야함.
 		});
 	}
 	
