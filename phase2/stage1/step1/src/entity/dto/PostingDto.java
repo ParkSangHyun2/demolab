@@ -20,6 +20,16 @@ public class PostingDto {
 	private String writtenDate;
 	private int readCount;
 	
+	private String boardId; 
+	
+	public String getBoardId() {
+		return boardId;
+	}
+
+	public void setBoardId(String boardId) {
+		this.boardId = boardId;
+	}
+
 	public PostingDto() {
 		//
 		this.readCount = 0; 
@@ -42,6 +52,7 @@ public class PostingDto {
 		this.contents = posting.getContents();
 		this.writtenDate = posting.getWrittenDate();
 		this.readCount = posting.getReadCount();
+		this.boardId = posting.getBoardId();
 	}
 
 	@Override

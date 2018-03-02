@@ -1,15 +1,13 @@
 package fxui.pane;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import entity.dto.TravelClubDto;
 import fxui.PrimaryScene;
-import fxui.event.BoardEventHelper;
+import fxui.Session;
 import fxui.event.ClubEventHelper;
 import fxui.util.ConfirmBox;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -37,15 +35,12 @@ public class ClubPane {
 	private String loggedInMemberEmail;
 	
 	private ClubEventHelper clubEvents;
-	private BoardEventHelper boardEvents;
-	
 	public ClubPane(String email, String name) {
 		//
 		this.loggedInMemberEmail = email;
 		this.loggedInMemberName = name;
 		
 		this.clubEvents = new ClubEventHelper();
-		this.boardEvents = new BoardEventHelper();
 	}
 
 	public void showMyClubScene() {
@@ -76,7 +71,7 @@ public class ClubPane {
 		
 		myClubTable.getColumns().addAll(nameColumn, introduceColumn, foundationDayColumn);
 		//테이블내용 가지고와야함
-		//myClubTable.setItems();
+		this.initializeMyClubs(myClubTable);
 		
 		tableLayout.getChildren().add(myClubTable);
 		
@@ -197,6 +192,11 @@ public class ClubPane {
 		popupStage.show();
 	}
 	
+	private void initializeMyClubs(TableView<TravelClubDto> myClubTable) {
+		//
+		clubEvents.searchMyClubs(myClubTable,Session.loggedInMemberEmail);
+	}
+	
 	private void setMyClubEvent(TableView<TravelClubDto> myClubTable,Button withdrawalBtn ) {
 		//
 		withdrawalBtn.setOnAction(e ->{
@@ -219,7 +219,8 @@ public class ClubPane {
 					ObservableList<TravelClubDto> selectedItem;
 					selectedItem = myClubTable.getSelectionModel().getSelectedItems();
 					TravelClubDto travelClub= selectedItem.iterator().next();
-					boardEvents.showPostings(travelClub);
+					BoardPane boardPane = new BoardPane(travelClub);
+					boardPane.showBoard();
 				}
 			}
 			

@@ -21,6 +21,8 @@ public class TravelClubDto {
 	private String intro;
 	private String foundationDay;
 	
+	private String boardId; 
+	
 	private List<ClubMembershipDto> membershipList;
 	
 	private TravelClubDto() {
@@ -43,6 +45,7 @@ public class TravelClubDto {
 		name = club.getName();
 		intro = club.getIntro();
 		foundationDay = club.getFoundationDay();
+		boardId = club.getBoardId();
 		
 		for (ClubMembership membership : club.getMembershipList()) {
 			//
