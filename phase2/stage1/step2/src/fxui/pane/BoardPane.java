@@ -164,6 +164,12 @@ public class BoardPane {
 					selectedItem = postingTable.getSelectionModel().getSelectedItems();
 					titleField.setText(selectedItem.iterator().next().getTitle());
 					articleField.setText(selectedItem.iterator().next().getContents());
+					PostingDto posting= selectedItem.iterator().next();
+					posting.setReadCount(posting.getReadCount()+1);
+					boardEvents.modifyPosting(posting,titleField, articleField);
+					
+//					BoardPane boardPane = new BoardPane(travelClubDto);
+//					boardPane.showBoard();
 				}
 			}
 
@@ -176,7 +182,7 @@ public class BoardPane {
 			deleteBtn.setVisible(true);
 			ObservableList<PostingDto> selectedItem;
 			selectedItem = postingTable.getSelectionModel().getSelectedItems();
-			boardEvents.modifyPosting(selectedItem.iterator().next());
+			boardEvents.modifyPosting(selectedItem.iterator().next(),titleField, articleField);
 
 			this.showBoard();
 		});

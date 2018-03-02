@@ -10,6 +10,8 @@ import fxui.util.AlertBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import step3.logic.ServiceLogicLycler;
 import step3.service.PostingService;
 
@@ -30,7 +32,6 @@ public class BoardEventHelper {
 		postingList = 
 				(ArrayList<PostingDto>) postingService.findByBoardId(travelClubDto.getUsid());
 		for(PostingDto posting : postingList) {
-			System.out.println(posting.getTitle());
 		}
 		}catch(Exception e) {
 			e.getMessage();
@@ -42,9 +43,11 @@ public class BoardEventHelper {
 		
 	}
 
-	public void modifyPosting(PostingDto posting) {
+	public void modifyPosting(PostingDto posting, TextField titleField, TextArea articleField) {
 		//
 		if(this.checkMemberPermission(posting)) {
+			posting.setTitle(titleField.getText());
+			posting.setContents(articleField.getText());
 			postingService.modify(posting);
 		}else {
 			AlertBox.alert("Info", "Permission Denied");

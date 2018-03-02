@@ -39,6 +39,7 @@ public class PostingServiceLogic implements PostingService {
 		}
 		
 		Posting newPosting = postingDto.toPostingIn(foundBoard);
+		System.out.println(newPosting.toString());
 		postingMap.put(newPosting.getId(), newPosting);
 	}
 
@@ -85,8 +86,9 @@ public class PostingServiceLogic implements PostingService {
 		if (newPosting.getContents() != null && !newPosting.getContents().isEmpty()) {
 			targetPosting.setContents(newPosting.getContents());
 		}
+		targetPosting.setReadCount(newPosting.getReadCount());
 		
-		postingMap.put(postingId, targetPosting);
+		postingMap.replace(postingId, targetPosting);
 	}
 
 	@Override
