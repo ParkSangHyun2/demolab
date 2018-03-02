@@ -6,6 +6,7 @@ import java.util.Collection;
 import entity.dto.PostingDto;
 import entity.dto.TravelClubDto;
 import fxui.Session;
+import fxui.util.AlertBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
@@ -28,6 +29,9 @@ public class BoardEventHelper {
 		try {
 		postingList = 
 				(ArrayList<PostingDto>) postingService.findByBoardId(travelClubDto.getUsid());
+		for(PostingDto posting : postingList) {
+			System.out.println(posting.getTitle());
+		}
 		}catch(Exception e) {
 			e.getMessage();
 		}finally {
@@ -40,16 +44,25 @@ public class BoardEventHelper {
 
 	public void modifyPosting(PostingDto posting) {
 		//
-		postingService.modify(posting);
+		if(this.checkMemberPermission(posting)) {
+			postingService.modify(posting);
+		}else {
+			AlertBox.alert("Info", "Permission Denied");
+		}
 	}
 
 	public void deletePosting(PostingDto posting) {
 		//
-		postingService.remove(posting.getUsid());
+		if(this.checkMemberPermission(posting)) {
+			postingService.remove(posting.getUsid());
+		}else {
+			AlertBox.alert("info", "Permission Denied");
+		}
+		
 	}
 
 	public void createPosting(String title, String article, TravelClubDto travelClubDto) {
-		// TODO Auto-generated method stub
+		//
 		postingService.register(travelClubDto.getUsid(), new PostingDto(title,Session.loggedInMemberEmail,article));
 	}
 	
@@ -58,5 +71,14 @@ public class BoardEventHelper {
 		ObservableList<PostingDto> allPostingList = FXCollections.observableArrayList();
 		allPostingList.addAll(postings);
 		return allPostingList;
+	}
+	
+	private boolean checkMemberPermission(PostingDto posting) {
+		//
+		boolean isPermitted = false;
+		if(posting.getWriterEmail().equals(Session.loggedInMemberEmail)) {
+			isPermitted = true;
+		}
+		return isPermitted;
 	}
 }

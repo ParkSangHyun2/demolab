@@ -71,14 +71,17 @@ public class BoardPane {
 		HBox btnLayout = new HBox();
 		StackPane postBtnBox = new StackPane();
 		Button newBtn = new Button("New Posting");
-		Button postBtn = new Button("Post");
+		
 		postBtnBox.setAlignment(Pos.BASELINE_LEFT);
-		postBtnBox.getChildren().addAll(newBtn, postBtn);
+		postBtnBox.getChildren().addAll(newBtn);
 
 		HBox btnBox = new HBox();
 		Button modifyBtn = new Button("Modify");
+		StackPane btnPane = new StackPane();
 		Button deleteBtn = new Button("Delete");
-		btnBox.getChildren().addAll(modifyBtn, deleteBtn);
+		Button postBtn = new Button("Post");
+		btnPane.getChildren().addAll(deleteBtn, postBtn);
+		btnBox.getChildren().addAll(modifyBtn, btnPane);
 		btnBox.setAlignment(Pos.BASELINE_RIGHT);
 
 		btnLayout.getChildren().addAll(postBtnBox, btnBox);
