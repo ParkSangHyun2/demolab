@@ -7,6 +7,8 @@
  */
 package entity.dto;
 
+import java.util.UUID;
+
 import entity.board.Posting;
 import entity.board.SocialBoard;
 import util.DateUtil;
@@ -71,8 +73,10 @@ public class PostingDto {
 
 	public Posting toPostingIn(SocialBoard board) {
 		//
+		//자동으로 usid만들어주는 기능 없음 -> 파일로가야 있음. 
+		//
 		Posting posting = new Posting(board, title, writerEmail, contents);
-		posting.setUsid(usid);
+		posting.setUsid(UUID.randomUUID().toString());
 		posting.setWrittenDate(writtenDate);
 		posting.setReadCount(readCount);
 		return posting;
