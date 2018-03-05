@@ -1,10 +1,8 @@
 package fxui.event;
 
 import entity.dto.MemberDto;
-import step3.logic.MemberServiceLogic;
 import step3.logic.ServiceLogicLycler;
 import step3.service.MemberService;
-import step3.service.ServiceLycler;
 
 public class LoginEventHelper {
 	//

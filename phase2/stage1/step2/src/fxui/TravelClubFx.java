@@ -21,7 +21,7 @@ public class TravelClubFx extends Application {
 		window.setMinHeight(550);
 		window.setMinWidth(600);
 		mainLayout = new BorderPane();
-		primaryScene = new PrimaryScene(window, mainLayout);
+		primaryScene = new PrimaryScene(mainLayout);
 	}
 
 	@Override
