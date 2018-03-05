@@ -14,10 +14,10 @@ import fxui.util.AlertBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
-import step3.logic.ServiceLogicLycler;
-import step3.service.BoardService;
-import step3.service.ClubService;
-import step3.service.MemberService;
+import step4_1.logic.ServiceLogicLycler;
+import step4_1.service.BoardService;
+import step4_1.service.ClubService;
+import step4_1.service.MemberService;
 
 public class ClubEventHelper {
 	private ClubService clubService = ServiceLogicLycler.shareInstance().createClubService();
