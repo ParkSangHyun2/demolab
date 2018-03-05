@@ -1,10 +1,13 @@
 package fxui.util;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -35,6 +38,17 @@ public class AlertBox {//
 		layout.setPadding(new Insets(10));
 
 		scene = new Scene(layout);
+
+		scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				//
+				if (event.getCode() == KeyCode.ENTER) {
+					closeBtn.fire();
+				}
+			}
+		});
 
 		stage.setScene(scene);
 		stage.showAndWait();

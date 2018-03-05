@@ -62,7 +62,7 @@ public class PrimaryScene {
 		mainLayout.setBottom(markOnUser("Undefined User"));
 		
 		menuBar.setDisable(true);
-		
+		mainLayout.getStylesheets().add(PrimaryScene.class.getResource("stylesheet.css").toExternalForm());
 		return mainLayout;
 	}
 	
