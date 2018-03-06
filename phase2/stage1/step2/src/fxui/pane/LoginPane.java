@@ -28,13 +28,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class LoginPane {
-	//
+
 	private BorderPane mainLayout;
 
 	LoginEventHelper loginEventHelper;
+	
+	public LoginPane(BorderPane mainLayout) {
+	
+	}
 
 	public LoginPane(Stage window, BorderPane mainLayout) {
-		//
+
 		this.mainLayout = mainLayout;
 		loginEventHelper = new LoginEventHelper();
 	}
