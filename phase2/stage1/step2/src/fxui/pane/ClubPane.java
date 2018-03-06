@@ -20,9 +20,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -31,73 +33,35 @@ import javafx.stage.Stage;
 
 public class ClubPane {
 	//
-	private String loggedInMemberName;
-	private String loggedInMemberEmail;
-	
 	private ClubEventHelper clubEvents;
+	private VBox mainLayout;
+	private StackPane titleLayout;
+	private StackPane tableLayout;
+	private StackPane buttonLayout;
+	private TableView<TravelClubDto> travelClubTable;
+	
 	public ClubPane(String email, String name) {
 		//
-		this.loggedInMemberEmail = email;
-		this.loggedInMemberName = name;
-		
 		this.clubEvents = new ClubEventHelper();
+		this.mainLayout = new VBox();
+		this.titleLayout = new StackPane();
+		this.tableLayout = new StackPane();
+		this.buttonLayout = new StackPane();
+		this.travelClubTable = drawTravelClubTable();
 	}
 
 	public void showMyClubScene() {
-		//내가 가입한 클럽목록 -> 클럽 더블클릭 -> 게시판이용
-		VBox mainLayout = new VBox();
-		
-		StackPane titleLayout = new StackPane();
-		Label titleLabel = new Label("My Clubs");
-		titleLabel.setFont(new Font(30));
-		titleLayout.getChildren().add(titleLabel);
-		
-		StackPane tableLayout = new StackPane();
-		TableView<TravelClubDto> myClubTable = new TableView<TravelClubDto>();
-		TableColumn<TravelClubDto, String> nameColumn =
-				new TableColumn<TravelClubDto, String>("Name");
-		nameColumn.prefWidthProperty().bind(myClubTable.widthProperty().divide(4));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		
-		TableColumn<TravelClubDto, String> introduceColumn =
-				new TableColumn<TravelClubDto, String>("Introduce");
-		introduceColumn.prefWidthProperty().bind(myClubTable.widthProperty().divide(2));
-		introduceColumn.setCellValueFactory(new PropertyValueFactory<>("intro"));
-		
-		TableColumn<TravelClubDto, String> foundationDayColumn = 
-				new TableColumn<TravelClubDto, String>("FoundationDay");
-		foundationDayColumn.prefWidthProperty().bind(myClubTable.widthProperty().divide(4));
-		foundationDayColumn.setCellValueFactory(new PropertyValueFactory<>("foundationDay"));
-		
-		myClubTable.getColumns().addAll(nameColumn, introduceColumn, foundationDayColumn);
-		//테이블내용 가지고와야함
-		this.initializeMyClubs(myClubTable);
-		
-		tableLayout.getChildren().add(myClubTable);
-		
-		StackPane buttonLayout = new StackPane();
-		Button withdrawalBtn = new Button("Withdrawal");
-		buttonLayout.getChildren().add(withdrawalBtn);
-		buttonLayout.setAlignment(Pos.BOTTOM_RIGHT);
-		
-		mainLayout.getChildren().addAll(titleLayout, tableLayout, buttonLayout);
-		mainLayout.setPadding(new Insets(10));
-		mainLayout.setSpacing(10);
-		
-		this.setMyClubEvent(myClubTable, withdrawalBtn);
-
-		PrimaryScene.changeScene(mainLayout);
+		setTitleLayout("My Clubs");
+		Button withdrawalButton = new Button("Withdraw");
+		setButtonLayout(withdrawalButton);
+		setMyClubEvent(withdrawalButton);
+		initializeMyClubs();
+		setTableLayout();
+		changeScene(titleLayout, tableLayout, buttonLayout);
 	}
 	
 	public void showSearchClubScene() {
-		//전체 리스트와 검색창.
-		VBox mainLayout = new VBox();
-		
-		StackPane titleLayout = new StackPane();
-		Label titleLabel = new Label("Find Clubs");
-		titleLabel.setFont(new Font(30));
-		titleLayout.getChildren().add(titleLabel);
-		
+		// Search Pane
 		HBox searchLayout = new HBox();
 		TextField searchField = new TextField();
 		Button searchBtn = new Button("Search");
@@ -105,46 +69,18 @@ public class ClubPane {
 		searchLayout.setSpacing(10);
 		searchLayout.setAlignment(Pos.BASELINE_RIGHT);
 		searchLayout.getChildren().addAll(searchField, searchBtn, searchAllBtn);
-		
-		StackPane tableLayout = new StackPane();
-		TableView<TravelClubDto> clubTable = new TableView<TravelClubDto>();
-		TableColumn<TravelClubDto, String> nameColumn =
-				new TableColumn<TravelClubDto, String>("Name");
-		nameColumn.prefWidthProperty().bind(clubTable.widthProperty().divide(4));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		
-		TableColumn<TravelClubDto, String> introduceColumn =
-				new TableColumn<TravelClubDto, String>("Introduce");
-		introduceColumn.prefWidthProperty().bind(clubTable.widthProperty().divide(2));
-		introduceColumn.setCellValueFactory(new PropertyValueFactory<>("intro"));
-		
-		TableColumn<TravelClubDto, String> foundationDayColumn = 
-				new TableColumn<TravelClubDto, String>("FoundationDay");
-		foundationDayColumn.prefWidthProperty().bind(clubTable.widthProperty().divide(4));
-		foundationDayColumn.setCellValueFactory(new PropertyValueFactory<>("foundationDay"));
-		
-		clubTable.getColumns().addAll(nameColumn, introduceColumn, foundationDayColumn);
-		//테이블 내용 불러와야함.
-		
-		
-		tableLayout.getChildren().add(clubTable);
-		
-		StackPane buttonLayout = new StackPane();
-		Button joinBtn = new Button("Join");
-		buttonLayout.getChildren().add(joinBtn);
-		buttonLayout.setAlignment(Pos.BOTTOM_RIGHT);
-		
-		mainLayout.getChildren().addAll(titleLayout, searchLayout, tableLayout, buttonLayout);
-		mainLayout.setPadding(new Insets(10));
-		mainLayout.setSpacing(10);
-		
-		this.setSearchClubEvent(clubTable, searchField, searchBtn, searchAllBtn, joinBtn);
-		
-		PrimaryScene.changeScene(mainLayout);
+
+		setTitleLayout("Find Clubs");
+		Button joinButton = new Button("Join");
+		setButtonLayout(joinButton);
+		travelClubTable.getItems().clear();
+		setTableLayout();
+		setSearchClubEvent(searchField, searchBtn, searchAllBtn, joinButton);
+		changeScene(titleLayout, searchLayout, tableLayout, buttonLayout);
 	}
 
 	public void showCreateClubScene() {
-		// 팝업창.
+		// Create Club PopUp
 		Label titleLabel = new Label("New TravelClub");
 		titleLabel.setFont(new Font(30));
 		Label clubNameLabel = new Label("Club Name");
@@ -192,17 +128,18 @@ public class ClubPane {
 		popupStage.show();
 	}
 	
-	private void initializeMyClubs(TableView<TravelClubDto> myClubTable) {
+	private void initializeMyClubs() {
 		//
-		clubEvents.searchMyClubs(myClubTable,Session.loggedInMemberEmail);
+		travelClubTable.getItems().clear();
+		clubEvents.searchMyClubs(travelClubTable, Session.loggedInMemberEmail);
 	}
 	
-	private void setMyClubEvent(TableView<TravelClubDto> myClubTable,Button withdrawalBtn ) {
+	private void setMyClubEvent(Button withdrawalBtn) {
 		//
 		withdrawalBtn.setOnAction(e ->{
 			ObservableList<TravelClubDto> selectedItem, allItem;
-			allItem = myClubTable.getItems();
-			selectedItem = myClubTable.getSelectionModel().getSelectedItems();
+			allItem = travelClubTable.getItems();
+			selectedItem = travelClubTable.getSelectionModel().getSelectedItems();
 			
 			if (ConfirmBox.display("DELETE", "sure to Withdrawal?")) {
 				clubEvents.withdrawalClub(selectedItem.iterator().next());
@@ -210,46 +147,42 @@ public class ClubPane {
 			}
 		});
 		
-		myClubTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+		travelClubTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				//
-				if(event.getClickCount() > 1) {
-					ObservableList<TravelClubDto> selectedItem;
-					selectedItem = myClubTable.getSelectionModel().getSelectedItems();
-					TravelClubDto travelClub= selectedItem.iterator().next();
-					BoardPane boardPane = new BoardPane(travelClub);
-					boardPane.showBoard();
+				if(event.getButton().equals(MouseButton.PRIMARY) 
+						&& event.getClickCount() > 1) {
+					if (!travelClubTable.getSelectionModel().isEmpty()) {
+						ObservableList<TravelClubDto> selectedItem = travelClubTable.getSelectionModel().getSelectedItems();						
+						TravelClubDto travelClub = selectedItem.iterator().next();
+						BoardPane boardPane = new BoardPane(travelClub);
+						boardPane.showBoard();						
+					}
 				}
 			}
-			
 		});
 	}
 	
-	private void setSearchClubEvent(TableView<TravelClubDto> clubTable, 
-			TextField searchField, Button searchBtn, Button searchAllBtn, Button joinBtn) {
+	private void setSearchClubEvent(TextField searchField, Button searchBtn, Button searchAllBtn, Button joinBtn) {
 		//
 		searchBtn.setOnAction(e ->{
 			String clubName = searchField.getText();
-			clubEvents.searchClub(clubName, clubTable);
+			clubEvents.searchClub(clubName, travelClubTable);
 		});
 		
 		searchAllBtn.setOnAction(e ->{
-			clubEvents.searchAllClub(clubTable);
+			clubEvents.searchAllClub(travelClubTable);
 		});
 		
 		joinBtn.setOnAction(e ->{
-			ObservableList<TravelClubDto> selectedItem, allItem;
-			allItem = clubTable.getItems();
-			selectedItem = clubTable.getSelectionModel().getSelectedItems();
+			ObservableList<TravelClubDto> selectedItem;
+			selectedItem = travelClubTable.getSelectionModel().getSelectedItems();
 			
 			if (ConfirmBox.display("Join", "sure to Join?")) {
 				clubEvents.joinClub(selectedItem.iterator().next());
-				
 			}
 		});
-		
 
 	}
 	
@@ -265,9 +198,56 @@ public class ClubPane {
 			
 			clubEvents.createClub(clubName, clubIntroduce);
 			popupStage.close();
-			//클럽생성시 보드도함께 생성해야함.
+			showMyClubScene();
 		});
 	}
-	
 
+	private void setTitleLayout(String titleText) {
+		titleLayout.getChildren().clear();
+		Label titleLabel = new Label(titleText);
+		titleLabel.setFont(new Font(30));
+		titleLayout.getChildren().add(titleLabel);
+	}
+	
+	private void setTableLayout() {
+		tableLayout.getChildren().clear();
+		tableLayout.getChildren().add(travelClubTable);
+	}
+	
+	private void setButtonLayout(Button... buttons) {
+		buttonLayout.getChildren().clear();
+		buttonLayout.getChildren().addAll(buttons);
+		buttonLayout.setAlignment(Pos.BOTTOM_RIGHT);		
+	}
+
+	private void changeScene(Pane... layouts) {
+		mainLayout.getChildren().clear();
+		mainLayout.getChildren().addAll(layouts);
+		mainLayout.setPadding(new Insets(10));
+		mainLayout.setSpacing(10);
+		PrimaryScene.changeScene(mainLayout);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private TableView<TravelClubDto> drawTravelClubTable() {
+		travelClubTable = new TableView<TravelClubDto>();
+		TableColumn<TravelClubDto, String> nameColumn =
+				new TableColumn<TravelClubDto, String>("Name");
+		nameColumn.prefWidthProperty().bind(travelClubTable.widthProperty().divide(4));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		
+		TableColumn<TravelClubDto, String> introduceColumn =
+				new TableColumn<TravelClubDto, String>("Introduce");
+		introduceColumn.prefWidthProperty().bind(travelClubTable.widthProperty().divide(2));
+		introduceColumn.setCellValueFactory(new PropertyValueFactory<>("intro"));
+		
+		TableColumn<TravelClubDto, String> foundationDayColumn = 
+				new TableColumn<TravelClubDto, String>("FoundationDay");
+		foundationDayColumn.prefWidthProperty().bind(travelClubTable.widthProperty().divide(4));
+		foundationDayColumn.setCellValueFactory(new PropertyValueFactory<>("foundationDay"));
+		
+		travelClubTable.getColumns().addAll(nameColumn, introduceColumn, foundationDayColumn);
+		return travelClubTable;
+	}
+	
 }
