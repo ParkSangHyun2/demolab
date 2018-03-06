@@ -32,6 +32,7 @@ public class BoardEventHelper {
 		postingList = 
 				(ArrayList<PostingDto>) postingService.findByBoardId(travelClubDto.getUsid());
 		for(PostingDto posting : postingList) {
+			
 		}
 		}catch(Exception e) {
 			e.getMessage();
