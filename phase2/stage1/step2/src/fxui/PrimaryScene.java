@@ -12,12 +12,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 public class PrimaryScene {
+	//
 	private static BorderPane mainLayout;
 	
-	private MenuBar menuBar;
+	MenuBar menuBar;
 	
 	public static void changeScene(Pane pane) {mainLayout.setCenter(pane);}
 	public static void defineLoggedInUser(String userName) {mainLayout.setBottom(markOnUser(userName));}
@@ -26,6 +26,7 @@ public class PrimaryScene {
 	
 	@SuppressWarnings("static-access")
 	public PrimaryScene(BorderPane mainLayout) {
+		//
 		this.mainLayout = mainLayout;
 	}
 
