@@ -28,7 +28,6 @@ public class TravelClubFx extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		//
 		scene = new Scene(primaryScene.createInitialPane());
-		//scene.X
 		
 		window.setScene(scene);
 		window.showAndWait();
