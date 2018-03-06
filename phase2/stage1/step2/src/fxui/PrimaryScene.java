@@ -15,22 +15,17 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class PrimaryScene {
-	//
-	private static Stage window;
 	private static BorderPane mainLayout;
 	
-	MenuBar menuBar;
-
+	private MenuBar menuBar;
 	
 	public static void changeScene(Pane pane) {mainLayout.setCenter(pane);}
 	public static void defineLoggedInUser(String userName) {mainLayout.setBottom(markOnUser(userName));}
 	public static void resetScene() {mainLayout.getTop().setDisable(true);
-	mainLayout.setCenter(new LoginPane(window, mainLayout).initLoginPane());}
+	mainLayout.setCenter(new LoginPane(mainLayout).initLoginPane());}
 	
 	@SuppressWarnings("static-access")
-	public PrimaryScene(Stage window, BorderPane mainLayout) {
-		//
-		this.window = window;
+	public PrimaryScene(BorderPane mainLayout) {
 		this.mainLayout = mainLayout;
 	}
 
@@ -45,7 +40,7 @@ public class PrimaryScene {
 		MenuItem findClubsMenu = new MenuItem("Find Clubs");
 		MenuItem createClubMenu = new MenuItem("Create Club");
 		
-		LoginPane loginPane = new LoginPane(window, mainLayout);
+		LoginPane loginPane = new LoginPane(mainLayout);
 		
 		userMenu.getItems().addAll(loggedUserMenu,logoutMenu);	
 		clubMenu.getItems().addAll(myClubsMenu, findClubsMenu, createClubMenu);

@@ -31,12 +31,8 @@ public class LoginPane {
 	private BorderPane mainLayout;
 
 	LoginEventHelper loginEventHelper;
-	
-	public LoginPane(BorderPane mainLayout) {
-	
-	}
 
-	public LoginPane(Stage window, BorderPane mainLayout) {
+	public LoginPane(BorderPane mainLayout) {
 		this.mainLayout = mainLayout;
 		loginEventHelper = new LoginEventHelper();
 	}
