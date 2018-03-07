@@ -40,7 +40,7 @@ public class BoardPane {
 	 * 
 	 * 1. 빈테이블에서 선택할시 테이블내의 항목이 없는데도 항목에 관한 버튼이 표시됨 V
 	 * 2. ReadCount 안올라감.
-	 * 3.
+	 * 3. 
 	 * 
 	 */
 	public void showBoard() {
@@ -177,9 +177,9 @@ public class BoardPane {
 					titleField.setText(selectedItem.iterator().next().getTitle());
 					articleField.setText(selectedItem.iterator().next().getContents());
 
-					PostingDto posting= selectedItem.iterator().next();
-					posting.setReadCount(posting.getReadCount()+1);
-					boardEvents.modifyPosting(posting,titleField, articleField);
+//					PostingDto posting= selectedItem.iterator().next();
+//					posting.setReadCount(posting.getReadCount()+1);
+//					boardEvents.modifyPosting(posting,titleField, articleField);
 					
 //					postingTable.getItems().clear();
 //					boardEvents.setPostList(postingTable,travelClubDto);
