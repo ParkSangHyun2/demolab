@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import step1.share.domain.entity.Entity;
-import step1.share.domain.entity.util.InvalidEmailException;
+import step1.share.util.InvalidEmailException;
 
 public class CommunityMember implements Entity {
 	//

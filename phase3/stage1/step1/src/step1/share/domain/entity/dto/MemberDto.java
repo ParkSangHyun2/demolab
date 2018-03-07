@@ -13,7 +13,7 @@ import java.util.List;
 import step1.share.domain.entity.club.Address;
 import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
-import step1.share.domain.entity.util.InvalidEmailException;
+import step1.share.util.InvalidEmailException;
 
 public class MemberDto {
 	//
