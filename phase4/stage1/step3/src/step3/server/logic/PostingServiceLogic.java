@@ -86,6 +86,7 @@ public class PostingServiceLogic implements PostingService {
 		if (newPosting.getContents() != null && !newPosting.getContents().isEmpty()) {
 			targetPosting.setContents(newPosting.getContents());
 		}
+		targetPosting.setReadCount(newPosting.getReadCount());
 		
 		postingStore.update(targetPosting);
 	}

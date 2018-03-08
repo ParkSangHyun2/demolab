@@ -22,7 +22,6 @@ public class MemberEventHelper {
 				memberService.modify(member);
 			}
 		}
-
 	}
 	
 	public MemberDto getMemberDto(String memberName) {

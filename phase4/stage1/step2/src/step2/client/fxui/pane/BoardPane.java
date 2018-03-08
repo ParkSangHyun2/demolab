@@ -66,20 +66,31 @@ public class BoardPane {
 		});
 
 		postingTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
+			//
+			ObservableList<PostingDto> selectedItem
+			= postingTable.getSelectionModel().getSelectedItems();
+			int selectedIndex;
+			
 			@Override
 			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 1 && !(postingTable.getItems().isEmpty())) {
+				if (event.getClickCount() == 1 && !(postingTable.getItems().isEmpty())
+						&& !selectedItem.isEmpty()) {
 					setVisibleBtns(true, false, true, true);
-					
-					ObservableList<PostingDto> selectedItem;
-					selectedItem = postingTable.getSelectionModel().getSelectedItems();
 					titleField.setText(selectedItem.iterator().next().getTitle());
 					articleField.setText(selectedItem.iterator().next().getContents());
+					
 
 					/**
 					 * If you click the mouse, you should increase the number in the 'readCount' column of TableView.
 					 */
+					PostingDto posting = selectedItem.iterator().next(); 
+					selectedIndex = postingTable.getSelectionModel().getSelectedIndex();
+					posting.setReadCount(
+							posting.getReadCount()+1
+							);
+					boardEvents.modifyPosting(posting,titleField, articleField);
+					initializePostList(postingTable);
+					postingTable.getSelectionModel().select(selectedIndex);
 				}
 			}
 

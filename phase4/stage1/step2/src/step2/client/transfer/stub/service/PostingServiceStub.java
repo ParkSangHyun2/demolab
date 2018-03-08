@@ -85,10 +85,8 @@ public class PostingServiceStub implements PostingService{
 		//
 		RequestMessage requestMessage = 
 				createRequestMessage("modify", (new Gson()).toJson(newPosting), "PostingDto");
-		
-		ResponseMessage response = null;
 		try {
-			response = dispatcher.dispatchReturn(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
