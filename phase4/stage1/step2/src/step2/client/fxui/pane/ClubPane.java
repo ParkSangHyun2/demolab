@@ -1,11 +1,3 @@
-/*
- * COPYRIGHT (c) Nextree Consulting 2018
- * This software is the proprietary of Nextree Consulting.  
- * 
- * @author <a href="mailto:shpark@nextree.co.kr">Park sanghyun</a>
- * @since 2018. 3. 4.
- */
-
 package step2.client.fxui.pane;
 
 import java.util.LinkedHashMap;
@@ -48,7 +40,7 @@ public class ClubPane {
 	private StackPane buttonLayout;
 	private TableView<TravelClubDto> travelClubTable;
 	
-	public ClubPane(String email, String name) {
+	public ClubPane() {
 		//
 		this.clubEvents = new ClubEventHelper();
 		this.mainLayout = new VBox();

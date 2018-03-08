@@ -131,7 +131,7 @@ public class LoginPane {
 
 		Stage popupStage = new Stage();
 
-		this.setSignupEvents(popupStage, valueNodes, confirmBtn, cancelBtn);
+		this.setSignupEvents(mainLayout, popupStage, valueNodes, confirmBtn, cancelBtn);
 
 		popupStage.setScene(scene);
 		popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -141,17 +141,8 @@ public class LoginPane {
 
 	private void setLoginEvents(Map<String, Node> valueNodes, Button loginBtn, Button signupBtn) {
 		//
-		mainLayout.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				//
-				if (event.getCode() == KeyCode.ENTER) {
-					loginBtn.fire();
-				}
-			}
-		});
-
+		this.setEnterEvent(mainLayout, loginBtn);
+		
 		loginBtn.setOnAction(e -> {
 			//
 			String email = ((TextField) valueNodes.get("emailField")).getText();
@@ -160,11 +151,10 @@ public class LoginPane {
 			if (loginEventHelper.login(email, name)) {
 				Session.putMemberInSession(email, name);
 				mainLayout.getTop().setDisable(false);
-				// Stage primaryStage = (Stage) mainLayout.getScene().getWindow();//temp
-				ClubPane clubPane = new ClubPane(Session.loggedInMemberEmail, Session.loggedInMemberName);
+
+				ClubPane clubPane = new ClubPane();
 				PrimaryScene.defineLoggedInUser(Session.loggedInMemberName);
 				clubPane.showMyClubScene();
-				// 다음씬으로 이동-> 첫화면 : 나의클럽정보
 			} else {
 				mainLayout.getTop().setDisable(true);
 				AlertBox.alert("Login Failed", "Please check");
@@ -172,23 +162,13 @@ public class LoginPane {
 		});
 
 		signupBtn.setOnAction(e -> {
-			// 회원가입팝업스테이지작성.
 			this.createSignupStage();
 		});
 	}
 
-	private void setSignupEvents(Stage stage, Map<String, Node> valueNodes, Button confirmBtn, Button cancelBtn) {
+	private void setSignupEvents(Pane pane,Stage stage, Map<String, Node> valueNodes, Button confirmBtn, Button cancelBtn) {
 		//
-		stage.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				//
-				if(event.getCode() == KeyCode.ENTER) {
-					confirmBtn.fire();
-				}
-			}
-		});
+		this.setEnterEvent(pane, confirmBtn);
 
 		confirmBtn.setOnAction(e -> {
 			//
@@ -197,12 +177,24 @@ public class LoginPane {
 			String phoneNumber = ((TextField) valueNodes.get("phoneField")).getText();
 
 			loginEventHelper.signupMember(email, name, phoneNumber);
-			AlertBox.alert("Success", "Registed!");
 			stage.close();
 		});
 
 		cancelBtn.setOnAction(e -> {
 			stage.close();
+		});
+	}
+
+	private void setEnterEvent(Pane pane, Button button) {
+		//
+		pane.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				//
+				if (event.getCode() == KeyCode.ENTER) {
+					button.fire();
+				}
+			}
 		});
 	}
 }

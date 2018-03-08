@@ -17,12 +17,10 @@ import step2.client.transfer.stub.service.ServiceLogicLycler;
 
 public class BoardEventHelper {
 	//
-	private TravelClubDto travelClub;
 	private PostingService postingService = ServiceLogicLycler.shareInstance().createPostingService();
 	
-	public BoardEventHelper(TravelClubDto travelClub) {
+	public BoardEventHelper() {
 		//
-		this.travelClub = travelClub;
 	}
 
 	public void setPostList(TableView<PostingDto> postingTable, TravelClubDto travelClubDto) {
@@ -31,9 +29,6 @@ public class BoardEventHelper {
 		try {
 		postingList = 
 				(ArrayList<PostingDto>) postingService.findByBoardId(travelClubDto.getUsid());
-		for(PostingDto posting : postingList) {
-			
-		}
 		}catch(Exception e) {
 			e.getMessage();
 		}finally {
