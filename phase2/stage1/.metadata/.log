@@ -1485,3 +1485,9 @@ org.eclipse.equinox.p2.core.ProvisionException: No repository found at http://os
 	at org.eclipse.equinox.internal.p2.updatechecker.UpdateChecker$UpdateCheckThread.run(UpdateChecker.java:74)
 !SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2018-03-07 13:30:04.599
 !MESSAGE No repository found at http://oss.opensagres.fr/angularjs-eclipse/1.0.0-SNAPSHOT/.
+
+!ENTRY org.eclipse.debug.ui 4 120 2018-03-07 14:31:12.784
+!MESSAGE org.eclipse.debug.ui.toggleBreakpointsTargetFactory extension failed to load breakpoint toggle target because the specified id is already registered.  Specified ID is: org.chromium.debug.ui.ChromiumToggleBreakpointTargetFactory
+
+!ENTRY com.instantiations.eclipse 1 0 2018-03-07 15:58:37.862
+!MESSAGE StartupPlugin: could not remove workbench property change listener (1) ... workbench might already be shut down.
