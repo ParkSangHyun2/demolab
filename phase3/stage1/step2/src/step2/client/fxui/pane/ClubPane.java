@@ -40,7 +40,7 @@ public class ClubPane {
 	private StackPane buttonLayout;
 	private TableView<TravelClubDto> travelClubTable;
 	
-	public ClubPane(String email, String name) {
+	public ClubPane() {
 		//
 		this.clubEvents = new ClubEventHelper();
 		this.mainLayout = new VBox();

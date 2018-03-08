@@ -1,5 +1,9 @@
 package step2.client.fxui.pane;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -8,8 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewFocusModel;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,21 +30,97 @@ import step2.client.fxui.util.ConfirmBox;
 public class BoardPane {
 	//
 	private TravelClubDto travelClubDto;
-	BoardEventHelper boardEvents;
+	private BoardEventHelper boardEvents;
+	private Map<String, Button> buttons;
 
 	public BoardPane(TravelClubDto travelClubDto) {
 		//
 		this.travelClubDto = travelClubDto;
-		boardEvents = new BoardEventHelper(travelClubDto);
+		this.boardEvents = new BoardEventHelper();
+		this.buttons = new LinkedHashMap<String, Button>();
 	}
 
-	/**
-	 * 
-	 * 1. 빈테이블에서 선택할시 테이블내의 항목이 없는데도 항목에 관한 버튼이 표시됨 V
-	 * 2. ReadCount 안올라감.
-	 * 3. 
-	 * 
-	 */
+	private void resetBtnLayout() {
+		//
+		this.setVisibleBtns(true, false, false, false);
+	}
+
+	private void initializePostList(TableView<PostingDto> postingTable) {
+		//
+		boardEvents.setPostList(postingTable,travelClubDto);
+	}
+
+	private void setPostEvents(TableView<PostingDto> postingTable, TextField titleField, TextArea articleField) {
+		buttons.get("new").setOnAction(e -> {
+			this.setVisibleBtns(false, true, false, false);
+			titleField.setText(null);
+			articleField.setText(null);
+		});
+		
+		buttons.get("post").setOnAction(e ->{
+			String title = titleField.getText();
+			String article = articleField.getText();
+			boardEvents.createPosting(title, article,travelClubDto);
+			this.resetBtnLayout();
+			this.initializePostList(postingTable);
+		});
+
+		postingTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 1 && !(postingTable.getItems().isEmpty())) {
+					setVisibleBtns(true, false, true, true);
+					
+					ObservableList<PostingDto> selectedItem;
+					selectedItem = postingTable.getSelectionModel().getSelectedItems();
+					titleField.setText(selectedItem.iterator().next().getTitle());
+					articleField.setText(selectedItem.iterator().next().getContents());
+
+					/**
+					 * If you click the mouse, you should increase the number in the 'readCount' column of TableView.
+					 */
+				}
+			}
+
+		});
+
+		buttons.get("modify").setOnAction(e -> {
+			this.setVisibleBtns(true, false, true, true);
+			ObservableList<PostingDto> selectedItem;
+			selectedItem = postingTable.getSelectionModel().getSelectedItems();
+			boardEvents.modifyPosting(selectedItem.iterator().next(),titleField, articleField);
+
+			this.showBoard();
+		});
+
+		buttons.get("delete").setOnAction(e -> {
+			this.setVisibleBtns(true, false, true, true);
+			ObservableList<PostingDto> allItem, selectedItem;
+			allItem = postingTable.getItems();
+			selectedItem = postingTable.getSelectionModel().getSelectedItems();
+
+			if (ConfirmBox.display("DELETE", "sure to Withdrawal?")) {
+				boardEvents.deletePosting(selectedItem.iterator().next());
+				selectedItem.forEach(allItem::remove);
+			}
+			this.showBoard();
+		});
+	}
+	
+	/*
+	Set the visible of the button
+	Sequence : (newBtn, postBtn, modifyBtn, deleteBtn)
+	*/
+	private void setVisibleBtns(boolean...switchs) {
+		//
+		Iterator<String> btnSequence = buttons.keySet().iterator();
+		for(int i=0; i<switchs.length; i++) {
+			buttons.get(btnSequence.next()).setVisible(switchs[i]);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void showBoard() {
 		//
 		VBox mainPostLayout = new VBox();
@@ -72,30 +150,29 @@ public class BoardPane {
 		readCountColumn.prefWidthProperty().bind(postListLayout.widthProperty().divide(6));
 		readCountColumn.setCellValueFactory(new PropertyValueFactory<>("readCount"));
 		postingTable.getColumns().addAll(titleColumn, writerEmailColumn, writtenDateColumn, readCountColumn);
-		
 		this.initializePostList(postingTable);
-		postingTable.getSelectionModel().selectFirst();
 
 		postListLayout.prefWidthProperty().bind(mainPostLayout.widthProperty().divide(1.5));
 		postListLayout.getChildren().add(postingTable);
 
 		HBox btnLayout = new HBox();
-		StackPane postBtnBox = new StackPane();
-		Button newBtn = new Button("New Posting");
 		
-		postBtnBox.setAlignment(Pos.BASELINE_LEFT);
-		postBtnBox.getChildren().addAll(newBtn);
-
-		HBox btnBox = new HBox();
+		Button newBtn = new Button("New Posting");
 		Button modifyBtn = new Button("Modify");
-		StackPane btnPane = new StackPane();
+		
+		StackPane stackBtns = new StackPane();
 		Button deleteBtn = new Button("Delete");
 		Button postBtn = new Button("Post");
-		btnPane.getChildren().addAll(deleteBtn, postBtn);
-		btnBox.getChildren().addAll(modifyBtn, btnPane);
-		btnBox.setAlignment(Pos.BASELINE_RIGHT);
+		
+		buttons.put("new", newBtn);
+		buttons.put("post", postBtn);
+		buttons.put("modify", modifyBtn);
+		buttons.put("delete", deleteBtn);
+		
+		
+		stackBtns.getChildren().addAll(deleteBtn, postBtn);
 
-		btnLayout.getChildren().addAll(postBtnBox, btnBox);
+		btnLayout.getChildren().addAll(newBtn, modifyBtn, stackBtns);
 		btnLayout.setSpacing(10);
 		btnLayout.setAlignment(Pos.BASELINE_RIGHT);
 		
@@ -106,8 +183,8 @@ public class BoardPane {
 		Label article = new Label("Article");
 		TextArea articleField = new TextArea();
 
-		this.setPostEvents(postingTable, titleField, articleField, newBtn, postBtn, modifyBtn, deleteBtn);
-		this.resetBtnLayout(newBtn, postBtn, modifyBtn, deleteBtn);
+		this.setPostEvents(postingTable, titleField, articleField);
+		this.resetBtnLayout();
 
 		postingLayout.add(subTitle, 0, 0);
 		postingLayout.add(article, 0, 1);
@@ -127,97 +204,5 @@ public class BoardPane {
 		mainPostLayout.getChildren().addAll(titleLayout, postListLayout, btnLayout, postDetailLayout);
 
 		PrimaryScene.changeScene(mainPostLayout);
-	}
-
-	private void resetBtnLayout(Button newBtn, Button postBtn, Button modifyBtn, Button deleteBtn) {
-		//
-		newBtn.setVisible(true);
-		postBtn.setVisible(false);
-		modifyBtn.setVisible(false);
-		deleteBtn.setVisible(false);
-	}
-
-	private void initializePostList(TableView<PostingDto> postingTable) {
-		//
-		boardEvents.setPostList(postingTable,travelClubDto);
-	}
-
-	private void setPostEvents(TableView<PostingDto> postingTable, TextField titleField, TextArea articleField,
-			Button newBtn, Button postBtn, Button modifyBtn, Button deleteBtn) {
-		newBtn.setOnAction(e -> {
-			newBtn.setVisible(false);
-			postBtn.setVisible(true);
-			modifyBtn.setVisible(false);
-			deleteBtn.setVisible(false);
-			titleField.setText(null);
-			articleField.setText(null);
-		});
-		
-		postBtn.setOnAction(e ->{
-			String title = titleField.getText();
-			String article = articleField.getText();
-			boardEvents.createPosting(title, article,travelClubDto);
-			this.resetBtnLayout(newBtn, postBtn, modifyBtn, deleteBtn);
-			this.initializePostList(postingTable);
-		});
-
-		postingTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				//
-				if (event.getClickCount() == 1 && !(postingTable.getItems().isEmpty())) {
-					newBtn.setVisible(true);
-					postBtn.setVisible(false);
-					modifyBtn.setVisible(true);
-					deleteBtn.setVisible(true);
-					
-					ObservableList<PostingDto> selectedItem;
-					selectedItem = postingTable.getSelectionModel().getSelectedItems();
-					titleField.setText(selectedItem.iterator().next().getTitle());
-					articleField.setText(selectedItem.iterator().next().getContents());
-
-//					PostingDto posting= selectedItem.iterator().next();
-//					posting.setReadCount(posting.getReadCount()+1);
-//					boardEvents.modifyPosting(posting,titleField, articleField);
-					
-//					postingTable.getItems().clear();
-//					boardEvents.setPostList(postingTable,travelClubDto);
-
-				}
-			}
-
-		});
-
-		modifyBtn.setOnAction(e -> {
-			newBtn.setVisible(true);
-			postBtn.setVisible(false);
-			modifyBtn.setVisible(true);
-			deleteBtn.setVisible(true);
-			ObservableList<PostingDto> selectedItem;
-			selectedItem = postingTable.getSelectionModel().getSelectedItems();
-			boardEvents.modifyPosting(selectedItem.iterator().next(),titleField, articleField);
-
-			postingTable.getItems().clear();
-			boardEvents.setPostList(postingTable,travelClubDto);
-		});
-
-		deleteBtn.setOnAction(e -> {
-			newBtn.setVisible(true);
-			postBtn.setVisible(false);
-			modifyBtn.setVisible(true);
-			deleteBtn.setVisible(true);
-			ObservableList<PostingDto> allItem, selectedItem;
-			allItem = postingTable.getItems();
-			selectedItem = postingTable.getSelectionModel().getSelectedItems();
-
-			if (ConfirmBox.display("DELETE", "sure to Withdrawal?")) {
-				boardEvents.deletePosting(selectedItem.iterator().next());
-				selectedItem.forEach(allItem::remove);
-			}
-			
-			postingTable.getItems().clear();
-			boardEvents.setPostList(postingTable,travelClubDto);
-		});
 	}
 }

@@ -21,7 +21,6 @@ import step2.client.transfer.stub.service.ServiceLogicLycler;
 
 public class ClubEventHelper {
 	private ClubService clubService = ServiceLogicLycler.shareInstance().createClubService();
-	private MemberService memberService = ServiceLogicLycler.shareInstance().createMemberService();
 	private BoardService boardService = ServiceLogicLycler.shareInstance().createBoardService();
 
 	public void createClub(String clubName, String clubIntroduce) {
