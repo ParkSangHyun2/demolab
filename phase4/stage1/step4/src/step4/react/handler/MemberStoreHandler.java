@@ -3,13 +3,14 @@ package step4.react.handler;
 import com.google.gson.Gson;
 
 import step1.share.domain.entity.club.CommunityMember;
+import step1.share.service.store.MemberStore;
 import step1.share.util.RequestMessage;
 import step1.share.util.ResponseMessage;
-import step4.store.MemberFileStore;
+import step4.store.FileStoreLycler;
 
 public class MemberStoreHandler<V> implements StoreHandler {
 	//
-	MemberFileStore memberStore = new MemberFileStore();
+	MemberStore memberStore = FileStoreLycler.shareInstance().requestMemberStore();
 	
 	@SuppressWarnings("unchecked")
 	@Override

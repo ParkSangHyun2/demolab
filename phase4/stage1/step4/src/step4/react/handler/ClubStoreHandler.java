@@ -3,13 +3,14 @@ package step4.react.handler;
 import com.google.gson.Gson;
 
 import step1.share.domain.entity.club.TravelClub;
+import step1.share.service.store.ClubStore;
 import step1.share.util.RequestMessage;
 import step1.share.util.ResponseMessage;
-import step4.store.ClubFileStore;
+import step4.store.FileStoreLycler;
 
 public class ClubStoreHandler<V> implements StoreHandler {
 	//
-	ClubFileStore clubStore = new ClubFileStore();
+	ClubStore clubStore = FileStoreLycler.shareInstance().requestClubStore();
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -66,7 +67,7 @@ public class ClubStoreHandler<V> implements StoreHandler {
 			break;
 		}
 		ResponseMessage responseMessage = 
-				new ResponseMessage("ClubStore",result);		
+				new ResponseMessage("ClubStore", result);		
 		
 		return responseMessage;
 	}
