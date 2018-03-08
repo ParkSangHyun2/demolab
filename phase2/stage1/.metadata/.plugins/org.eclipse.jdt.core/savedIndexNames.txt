@@ -19,4 +19,3 @@ INDEX VERSION 1.130+/Users/parksanghyun/Namoosori_Teaching/demolab/phase2/stage1
 1690311816.index
 2789758058.index
 2842472240.index
-3034815017.index

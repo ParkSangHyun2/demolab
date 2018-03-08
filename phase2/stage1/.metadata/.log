@@ -1769,3 +1769,39 @@ org.eclipse.equinox.p2.core.ProvisionException: No repository found at http://os
 
 !ENTRY org.eclipse.lsp4e 1 0 2018-03-08 16:31:06.608
 !MESSAGE Non IFiles not supported yet
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:35.953
+!MESSAGE Error while checking type hierarchy of MemberEventHelper and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.309
+!MESSAGE Error while checking type hierarchy of PrimaryScene and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.309
+!MESSAGE Error while checking type hierarchy of TravelClubFx and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.310
+!MESSAGE Error while checking type hierarchy of BoardEventHelper and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.310
+!MESSAGE Error while checking type hierarchy of ClubEventHelper and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.311
+!MESSAGE Error while checking type hierarchy of LoginEventHelper and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.311
+!MESSAGE Error while checking type hierarchy of BoardPane and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.312
+!MESSAGE Error while checking type hierarchy of ClubPane and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.312
+!MESSAGE Error while checking type hierarchy of LoginPane and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.313
+!MESSAGE Error while checking type hierarchy of MemberPane and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.313
+!MESSAGE Error while checking type hierarchy of AlertBox and org.mybatis.guice.MyBatisModule
+
+!ENTRY net.harawata.mybatipse 4 0 2018-03-08 16:43:36.313
+!MESSAGE Error while checking type hierarchy of ConfirmBox and org.mybatis.guice.MyBatisModule
