@@ -16,28 +16,28 @@ public class AlertBox {//
 
 	public static void alert(String title, String message) {
 		//
-		Stage stage;
+		Stage stage = new Stage();
 		Scene scene;
-		VBox layout;
-		Button closeBtn;
+		VBox layout = new VBox();
+		Button closeBtn = new Button("close");
+		Label label = new Label(message);
 
-		stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setResizable(false);
-
 		stage.setTitle(title);
-		Label label = new Label(message);
-		closeBtn = new Button("close");
+
 		closeBtn.setAlignment(Pos.CENTER);
 		closeBtn.setOnAction(e -> stage.close());
 
-		layout = new VBox();
 		layout.getChildren().addAll(label, closeBtn);
 		layout.setAlignment(Pos.BOTTOM_CENTER);
 		layout.setSpacing(10);
 		layout.setPadding(new Insets(10));
 
 		scene = new Scene(layout);
+		
+		stage.titleProperty()
+		.bind(scene.widthProperty().asString().concat(" : ").concat(scene.heightProperty().asString()));
 
 		scene.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
 

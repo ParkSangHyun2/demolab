@@ -104,6 +104,8 @@ public class MemberPane {
 
 	private void setMemberEvent(Map<String, Node> valueNodes, Button modifyBtn, Button cancelBtn) {
 		//
+		ClubPane clubPane = new ClubPane();
+		
 		modifyBtn.setOnAction(e -> {
 			String phoneNumber = ((TextField) valueNodes.get("phoneNumber")).getText();
 			String nickName = ((TextField) valueNodes.get("nickName")).getText();
@@ -111,12 +113,10 @@ public class MemberPane {
 			String memberName = Session.loggedInMemberName;
 			
 			memberEvent.modifyMember(memberName, phoneNumber, nickName, birthDay);
-			ClubPane clubPane = new ClubPane(Session.loggedInMemberEmail,Session.loggedInMemberName);
 			clubPane.showMyClubScene();
 		});
 
 		cancelBtn.setOnAction(e -> {
-			ClubPane clubPane = new ClubPane(Session.loggedInMemberEmail, Session.loggedInMemberName);
 			clubPane.showMyClubScene();
 		});
 	}
