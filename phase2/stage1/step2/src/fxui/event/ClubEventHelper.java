@@ -17,11 +17,9 @@ import javafx.scene.control.TableView;
 import step4_1.logic.ServiceLogicLycler;
 import step4_1.service.BoardService;
 import step4_1.service.ClubService;
-import step4_1.service.MemberService;
 
 public class ClubEventHelper {
 	private ClubService clubService = ServiceLogicLycler.shareInstance().createClubService();
-	private MemberService memberService = ServiceLogicLycler.shareInstance().createMemberService();
 	private BoardService boardService = ServiceLogicLycler.shareInstance().createBoardService();
 
 	public void createClub(String clubName, String clubIntroduce) {

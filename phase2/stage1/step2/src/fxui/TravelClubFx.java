@@ -17,7 +17,7 @@ public class TravelClubFx extends Application {
 		//
 		window = new Stage();
 		window.setTitle("TravelClub-Stage1");
-		window.setResizable(false);
+		window.setResizable(true);
 		window.setMinHeight(550);
 		window.setMinWidth(600);
 		mainLayout = new BorderPane();
