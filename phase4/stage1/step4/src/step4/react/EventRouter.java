@@ -35,16 +35,16 @@ public class EventRouter implements Runnable {
 		
 		switch(serviceName) {
 		case "BoardStore":
-			storeHandler = new BoardStoreHandler();
+			storeHandler = new BoardStoreHandler<Object>();
 			break;
 		case "ClubStore":
-			storeHandler = new ClubStoreHandler();
+			storeHandler = new ClubStoreHandler<Object>();
 			break;
 		case "MemberStore":
-			storeHandler = new MemberStoreHandler();
+			storeHandler = new MemberStoreHandler<Object>();
 			break;
 		case "PostingStore":
-			storeHandler = new PostingStoreHandler();
+			storeHandler = new PostingStoreHandler<Object>();
 			break;
 		}
 		

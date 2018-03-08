@@ -62,6 +62,9 @@ public class PostingStoreHandler<V> implements StoreHandler {
 					);
 			result = (new Gson()).toJson(isExist);
 			break;
+			
+		default:
+			System.out.println("no such serviceName..");
 		}
 		ResponseMessage responseMessage=
 				new ResponseMessage("BoardStore", result);
