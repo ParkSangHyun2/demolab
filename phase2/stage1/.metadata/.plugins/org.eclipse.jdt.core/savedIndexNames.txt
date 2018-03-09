@@ -1,5 +1,0 @@
-INDEX VERSION 1.130+/Users/parksanghyun/Namoosori_Teaching/demolab/phase2/stage1/.metadata/.plugins/org.eclipse.jdt.core
-1568685852.index
-3286543039.index
-770362259.index
-3034815017.index
