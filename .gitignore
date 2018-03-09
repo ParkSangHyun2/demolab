@@ -18,5 +18,8 @@
 *.tar.gz
 *rar
 
+#Mac Finder file
+*.DS_Store
+
 #JavaStory git ignore File.
 /.metadata/
