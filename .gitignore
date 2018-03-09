@@ -21,5 +21,8 @@
 #Mac Finder file
 *.DS_Store
 
+#TempFolder
+RemoteSystemTempFiles/
+
 #JavaStory git ignore File.
 /.metadata/
