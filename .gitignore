@@ -10,8 +10,7 @@
 #Mobile Tools for Java(J2ME)
 .mtj.tmp/
 
-# Package FIles
-*.jar
+# Package FIlesr
 *.war
 *.ear
 *.zip
@@ -22,7 +21,7 @@
 *.DS_Store
 
 #TempFolder
-RemoteSystemTempFiles/
+RemoteSystemsTempFiles/
 
 #JavaStory git ignore File.
 /.metadata/
