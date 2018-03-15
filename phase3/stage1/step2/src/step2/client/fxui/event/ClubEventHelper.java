@@ -14,10 +14,10 @@ import step1.share.domain.entity.dto.ClubMembershipDto;
 import step1.share.domain.entity.dto.TravelClubDto;
 import step1.share.service.logic.BoardService;
 import step1.share.service.logic.ClubService;
-import step1.share.service.logic.MemberService;
 import step2.client.fxui.Session;
 import step2.client.fxui.util.AlertBox;
 import step2.client.transfer.stub.service.ServiceLogicLycler;
+
 
 public class ClubEventHelper {
 	private ClubService clubService = ServiceLogicLycler.shareInstance().createClubService();

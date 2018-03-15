@@ -18,7 +18,7 @@ import step1.share.service.store.BoardStore;
 import step1.share.service.store.PostingStore;
 import step1.share.util.NoSuchBoardException;
 import step1.share.util.NoSuchPostingException;
-import step3.server.store.FileStoreLycler;
+import step3.server.transfer.stub.store.FileStoreLycler;
 
 public class PostingServiceLogic implements PostingService {
 	//

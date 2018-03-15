@@ -20,7 +20,7 @@ import step1.share.util.BoardDuplicationException;
 import step1.share.util.NoSuchBoardException;
 import step1.share.util.NoSuchClubException;
 import step1.share.util.NoSuchMemberException;
-import step3.server.store.FileStoreLycler;
+import step3.server.transfer.stub.store.FileStoreLycler;
 
 public class BoardServiceLogic implements BoardService {
 	//

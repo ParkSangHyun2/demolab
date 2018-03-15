@@ -23,7 +23,7 @@ import step1.share.util.ClubDuplicationException;
 import step1.share.util.MemberDuplicationException;
 import step1.share.util.NoSuchClubException;
 import step1.share.util.NoSuchMemberException;
-import step3.server.store.FileStoreLycler;
+import step3.server.transfer.stub.store.FileStoreLycler;
 
 public class ClubServiceLogic implements ClubService {
 	//

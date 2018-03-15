@@ -1,5 +1,6 @@
 package step2.client.fxui;
 
+
 public class Session {
 	//
 	public static String loggedInMemberEmail;

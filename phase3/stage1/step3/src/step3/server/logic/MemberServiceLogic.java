@@ -17,7 +17,7 @@ import step1.share.service.store.MemberStore;
 import step1.share.util.InvalidEmailException;
 import step1.share.util.MemberDuplicationException;
 import step1.share.util.NoSuchMemberException;
-import step3.server.store.FileStoreLycler;
+import step3.server.transfer.stub.store.FileStoreLycler;
 
 public class MemberServiceLogic implements MemberService {
 	//
