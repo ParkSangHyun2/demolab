@@ -32,10 +32,9 @@ public class ClubServiceStub implements ClubService {
 		RequestMessage requestMessage = 
 				createRequestMessage("registerClub", (new Gson()).toJson(club),
 				"TravelClubDto");
-		ResponseMessage response = null;
 
 		try {
-			response = dispatcher.dispatchReturn(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			//
 			e.printStackTrace();
@@ -104,7 +103,7 @@ public class ClubServiceStub implements ClubService {
 				createRequestMessage("remove", clubId, "String");
 		
 		try {
-			dispatcher.dispatchVoid(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			//
 			e.printStackTrace();
@@ -119,12 +118,11 @@ public class ClubServiceStub implements ClubService {
 		RequestMessage requestMessage = 
 				createRequestMessage("addMembership", (new Gson()).toJson(membershipDto),
 				"ClubMembershipDto");
-		ResponseMessage response = null;
 
 		try {
-			response = dispatcher.dispatchReturn(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			//
 			e.printStackTrace();
 		}
 
@@ -174,7 +172,7 @@ public class ClubServiceStub implements ClubService {
 				"String", "ClubMembershipDto");
 
 		try {
-			dispatcher.dispatchVoid(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -190,7 +188,7 @@ public class ClubServiceStub implements ClubService {
 				createRequestMessage("removeMembership", clubId, memberId, "String", "String");
 
 		try {
-			dispatcher.dispatchVoid(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -57,6 +57,7 @@ public class SocketDispatcher {
 			socket.setSoLinger(true, 0); 	// Can't assign requested address
 			socket.setReuseAddress(true);
 			socket.connect(new InetSocketAddress(serverIp, listeningPort), TIME_OUT_IN_SECONDS*1000);
+			socket.setSoTimeout(3000);
 		} catch (UnknownHostException e) {
 			throw new DispatchFailException(e.getMessage());
 		} catch (IOException e) {

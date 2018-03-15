@@ -29,10 +29,9 @@ public class MemberServiceStub implements MemberService{
 		//
 		RequestMessage requestMessage =
 				createRequestMessage("register",(new Gson()).toJson(member),"MemberDto");
-		ResponseMessage response = null;
 		
 		try {
-			response = dispatcher.dispatchReturn(requestMessage);
+			dispatcher.dispatchReturn(requestMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -44,10 +44,12 @@ public class MemberServiceLogic implements MemberService {
 	public MemberDto find(String memberEmail) {
 		//
 		CommunityMember member = memberStore.retrieve(memberEmail);
-
+		System.out.println("find " + member);
 		if (member == null) {
-			throw new NoSuchMemberException("No such a member with email: " + memberEmail);
+			return null;
+			//throw new NoSuchMemberException("No such a member with email: " + memberEmail);
 		}
+		
 		return new MemberDto(member);
 	}
 

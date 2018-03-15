@@ -24,14 +24,11 @@ public class LoginEventHelper {
 
 	public void signupMember(String email, String name, String phone) {
 		//
-		try {
-			memberService.find(email);
-			AlertBox.alert("Info", "email : "+ email + ", Already registed Email in Club");
-
-		} catch(Exception e) {
-			e.getMessage();
+		if(memberService.find(email) == null) {
 			memberService.register(new MemberDto(email, name, phone));
 			AlertBox.alert("Success", "Registed!");
+		}else {
+			AlertBox.alert("Info", "email : "+ email + ", Already registed Email in Club");
 		}
 	}
 

@@ -13,3 +13,7 @@ public enum AddressType {
 	Home, 
 	Office
 }
+
+public String getType(){
+    return this.name();
+}

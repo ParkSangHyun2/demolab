@@ -72,6 +72,7 @@ public class ClubServiceLogic implements ClubService {
 		TravelClub club = clubStore.retrieveByName(name);
 		
 		if (club == null) {
+			//return null;
 			throw new NoSuchClubException("No such a club with name: " + name);
 		} 
 		
@@ -103,6 +104,7 @@ public class ClubServiceLogic implements ClubService {
 	@Override
 	public void addMembership(ClubMembershipDto membershipDto) {
 		//
+		System.out.println("addMembership");
 		// check existing member
 		String memberId = membershipDto.getMemberEmail();
 		CommunityMember member = memberStore.retrieve(memberId);
@@ -121,8 +123,10 @@ public class ClubServiceLogic implements ClubService {
 		// add membership
 		ClubMembership clubMembership = membershipDto.toMembership();
 		club.getMembershipList().add(clubMembership);
+		System.out.println("LOG: " + club.getMembershipList());
 		clubStore.update(club);
 		member.getMembershipList().add(clubMembership);
+		System.out.println("LOG: " + member.getMembershipList());
 		memberStore.update(member);
 	}
 

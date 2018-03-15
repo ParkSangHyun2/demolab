@@ -31,7 +31,7 @@ public class ClubEventHelper {
 		clubMembershipDto.setRole(RoleInClub.President);
 		clubService.addMembership(clubMembershipDto);
 		boardService.register(new BoardDto(travelClub.getUsid(),travelClub.getName(), Session.loggedInMemberEmail));
-
+		
 		AlertBox.alert("Info", clubName + " Registed!");
 	}
 
@@ -39,6 +39,12 @@ public class ClubEventHelper {
 		//
 		String clubId = next.getUsid();
 		String memberId = Session.loggedInMemberEmail;
+		for(ClubMembershipDto membership : next.getMembershipList() ) {
+			if (membership.getMemberEmail().equals(memberId) && membership.getRole().toString().equals("President")) {
+				clubService.remove(clubId);
+				return;
+			}
+		}
 		clubService.removeMembership(clubId, memberId);
 		AlertBox.alert("Info", "Withdrawal");
 	}
