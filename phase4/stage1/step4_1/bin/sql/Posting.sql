@@ -1,12 +1,12 @@
 CREATE TABLE `Posting` (
-  `usid` varchar(40) NOT NULL DEFAULT '',
-  `title` varchar(20) DEFAULT NULL,
-  `writerEmail` varchar(20) NOT NULL DEFAULT '',
-  `contents` varchar(80) DEFAULT NULL,
-  `writtenDate` varchar(11) DEFAULT NULL,
-  `readCount` int(11) DEFAULT NULL,
-  `boardId` varchar(40) NOT NULL DEFAULT '',
-  PRIMARY KEY (`usid`),
-  KEY `boardId` (`boardId`),
-  CONSTRAINT `posting_ibfk_1` FOREIGN KEY (`boardId`) REFERENCES `SocialBoard` (`clubId`) ON DELETE CASCADE
+  `Usid` int(11) NOT NULL AUTO_INCREMENT,
+  `Title` varchar(15) DEFAULT NULL,
+  `WriterEmail` varchar(15) DEFAULT NULL,
+  `Contents` varchar(50) DEFAULT NULL,
+  `WrittenDate` varchar(15) DEFAULT NULL,
+  `ReadCount` int(11) DEFAULT NULL,
+  `BoardId` int(15) DEFAULT NULL,
+  PRIMARY KEY (`Usid`),
+  KEY `foreignKey of  SocialBoard(boardId)` (`BoardId`),
+  CONSTRAINT `foreignKey of  SocialBoard(boardId)` FOREIGN KEY (`BoardId`) REFERENCES `SocialBoard` (`ClubId`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

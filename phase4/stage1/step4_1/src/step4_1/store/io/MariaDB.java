@@ -9,6 +9,9 @@ public class MariaDB {
 	//
 	private static Connection connection;
 	private static PreparedStatement state;
+	private final static String DATABASE_NAME = "NAMOOSORI_PHASE4";
+	private final static String USER_NAME = "root";
+	private final static String PASSWORD = "";
 	
 	public MariaDB() {
 		//
@@ -16,7 +19,7 @@ public class MariaDB {
 	
 	public static PreparedStatement runQuery(String query, String...values) {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namoosori","root","");
+			connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/" + DATABASE_NAME, USER_NAME, PASSWORD);
 			state = connection.prepareStatement(query);
 			
 			for(int i =1; i <= values.length; i++) {
@@ -24,18 +27,18 @@ public class MariaDB {
 			}
 		} catch (SQLException e) {
 			//
-			System.out.println("Maria_db ---> " + e.getMessage());
+			System.out.println("Maria_db RunQuery Exception---> " + e.getMessage());
 		}
 		return state;
 	}
 	
 	public static Connection getConnection() {
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/namoosori","root","");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DATABASE_NAME, USER_NAME, PASSWORD);
 			return connection;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//
+			System.out.println("Maria_db getConnection Exception ---> " + e.getMessage());
 		}
 		return null;
 	}

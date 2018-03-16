@@ -23,6 +23,7 @@ public class ClubQuery {
 		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE USID = ?", id);
 		try {
 			ResultSet result = state.executeQuery();
+			state.close();
 			while (result.next()) {
 				isExist = true;
 				System.out.println("true");
@@ -31,6 +32,7 @@ public class ClubQuery {
 			//
 			System.out.println(e.getMessage());
 		}
+		
 		MariaDB.closeQuery();
 		return isExist;
 	}
@@ -41,6 +43,7 @@ public class ClubQuery {
 				club.getName(), club.getIntro(), club.getFoundationDay(), club.getBoardId());
 		try {
 			state.executeUpdate();
+			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
@@ -57,6 +60,7 @@ public class ClubQuery {
 		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE USID = ?", clubId);
 		try {
 			ResultSet result = state.executeQuery();
+			state.close();
 			if (result.next()) {
 				for (int i = 0; i < 5; i++) {
 					values[i] = result.getString(i + 1);
@@ -69,6 +73,7 @@ public class ClubQuery {
 
 			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID = ?", clubId);
 			result = state.executeQuery();
+			state.close();
 
 			while (result.next()) {
 				ClubMembership membership = new ClubMembership(result.getString("clubId"),
@@ -104,6 +109,7 @@ public class ClubQuery {
 		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE NAME = ?", name);
 		try {
 			ResultSet result = state.executeQuery();
+			state.close();
 			if (result.next()) {
 				for (int i = 0; i < 5; i++) {
 					values[i] = result.getString(i + 1);
@@ -119,6 +125,7 @@ public class ClubQuery {
 			PreparedStatement travelClubState = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?",
 					name);
 			ResultSet clubResult = travelClubState.executeQuery();
+			travelClubState.close();
 
 			while (clubResult.next()) {
 				ClubMembership membership = new ClubMembership(clubResult.getString("clubId"),
@@ -159,6 +166,7 @@ public class ClubQuery {
 		try {
 			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID= ?", club.getId());
 			ResultSet membershipResult = state.executeQuery();
+			state.close();
 			while (membershipResult.next()) {
 				memberEmail = membershipResult.getString("memberEmail");
 				membershipList.add(new ClubMembership(club.getUsid(), memberEmail));
@@ -169,6 +177,7 @@ public class ClubQuery {
 							membership.getMemberEmail(), membership.getMemberName(),
 							membership.getRole().toString(), membership.getJoinDate());
 					state.executeUpdate();
+					state.close();
 				}
 			}
 
@@ -189,6 +198,7 @@ public class ClubQuery {
 								membership.getMemberEmail(), membership.getMemberName(),
 								membership.getRole().toString(), membership.getJoinDate());
 						state.executeUpdate();
+						state.close();
 						break;
 					}
 				}
@@ -226,6 +236,7 @@ public class ClubQuery {
 		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB ");
 		try {
 			ResultSet result = state.executeQuery();
+			state.close();
 			while (result.next()) {
 				for (int i = 0; i < 5; i++) {
 					values[i] = result.getString(i + 1);
@@ -237,6 +248,7 @@ public class ClubQuery {
 			for (TravelClub club : clubs) {
 				state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE clubId = ?", club.getUsid());
 				result = state.executeQuery();
+				state.close();
 				while (result.next()) {
 					ClubMembership membership = new ClubMembership(result.getString("clubId"),
 							result.getString("memberEmail"));
