@@ -12,7 +12,6 @@ public class MariaDB {
 	private final static String DATABASE_NAME = "NAMOOSORI_PHASE4";
 	private final static String USER_NAME = "root";
 	private final static String PASSWORD = "";
-	private String test;
 	
 	public MariaDB() {
 		//

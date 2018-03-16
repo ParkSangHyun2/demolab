@@ -5,7 +5,7 @@ CREATE TABLE `ClubMembership` (
   `Role` enum('PRESIDENT','MEMBER') DEFAULT NULL,
   `JoinDate` varchar(15) DEFAULT NULL,
   UNIQUE KEY `clubid` (`clubid`,`MemberEmail`),
-  KEY `foreignKey of CommunityMember(email)` (`MemberEmail`),
-  CONSTRAINT `foreignKey of CommunityMember(email)` FOREIGN KEY (`MemberEmail`) REFERENCES `CommunityMember` (`Email`) ON DELETE CASCADE,
-  CONSTRAINT `foreignKey of TravelClub(usid)` FOREIGN KEY (`clubid`) REFERENCES `TravelClub` (`Usid`) ON DELETE CASCADE
+  KEY `foreignKey of CommunityMember` (`MemberEmail`),
+  CONSTRAINT `foreignKey of CommunityMember` FOREIGN KEY (`MemberEmail`) REFERENCES `CommunityMember` (`Email`) ON DELETE CASCADE,
+  CONSTRAINT `foreignKey of TravelClub` FOREIGN KEY (`clubid`) REFERENCES `TravelClub` (`Usid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

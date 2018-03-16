@@ -34,12 +34,14 @@ public class BoardQuery {
 	public void write(SocialBoard board) {
 		//
 		try {
-			state = MariaDB.getConnection().prepareStatement("INSERT INTO SOCIALBOARD VALUES(?,?,?,?,?)");
-			state.setString(1, board.getId());
-			state.setString(2, "board");
-			state.setString(3, board.getAdminEmail());
-			state.setString(4, board.getCreateDate());
-			state.setInt(5, 0);
+			state = MariaDB.getConnection().prepareStatement(
+					"INSERT INTO SOCIALBOARD(Name, AdminEmail, CreateDate, Sequence, clubId) VALUES(?,?,?,?,?)"
+					);
+			state.setString(1, "board");
+			state.setString(2, board.getAdminEmail());
+			state.setString(3, board.getCreateDate());
+			state.setInt(4, 0);
+			state.setString(5, board.getId());
 
 			state.executeUpdate();
 		} catch (SQLException e) {
@@ -52,19 +54,22 @@ public class BoardQuery {
 	public SocialBoard read(String boardId) {
 		//
 		String[] values = new String[5];
+		int clubId;
 		SocialBoard board = null;
 
 		state = MariaDB.runQuery("SELECT * FROM SOCIALBOARD WHERE CLUBID = ?", boardId);
 		try {
 			ResultSet result = state.executeQuery();
 			if (result.next()) {
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < 3; i++) {
 					values[i] = result.getString(i + 1);
 				}
+				clubId = result.getInt("ClubId");
 			} else {
 				return board;
 			}
 			board = new BoardDao(values).toSocialBoard();
+			board.setClubId(Integer.toString(clubId));
 
 		} catch (SQLException e) {
 			//

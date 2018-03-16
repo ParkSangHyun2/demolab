@@ -21,11 +21,10 @@ public class TravelClubDao {
 	public TravelClubDao(String...strings) {
 		//
 		this();
-		this.usid = strings[0];
-		this.name = strings[1];
-		this.intro = strings[2];
-		this.foundationDay = strings[3];
-		this.boardId = strings[4];
+		this.name = strings[0];
+		this.intro = strings[1];
+		this.foundationDay = strings[2];
+		this.boardId = strings[3];
 	}
 	
 	public TravelClubDao(TravelClub travelClub) {

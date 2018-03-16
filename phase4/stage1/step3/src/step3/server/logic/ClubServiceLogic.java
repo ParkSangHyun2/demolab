@@ -183,7 +183,6 @@ public class ClubServiceLogic implements ClubService {
 		TravelClub foundClub = clubStore.retrieve(clubId);
 		CommunityMember foundMember = memberStore.retrieve(memberId);
 		ClubMembership clubMembership = getMembershipIn(foundClub, memberId);
-		
 		// remove membership
 		foundClub.getMembershipList().remove(clubMembership);
 		clubStore.update(foundClub);

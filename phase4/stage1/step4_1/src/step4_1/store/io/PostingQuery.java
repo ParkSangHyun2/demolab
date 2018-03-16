@@ -38,15 +38,15 @@ public class PostingQuery {
 	public void write(Posting posting) {
 		//
 		try {
-			state = MariaDB.getConnection().prepareStatement("INSERT INTO POSTING VALUES(?,?,?,?,?,?,?)");
-			state.setString(1, posting.getUsid());
-			System.out.println(posting.getUsid());
-			state.setString(2, posting.getTitle());
-			state.setString(3, posting.getWriterEmail());
-			state.setString(4, posting.getContents());
-			state.setString(5, posting.getWrittenDate());
-			state.setInt(6, posting.getReadCount());
-			state.setString(7, posting.getBoardId());
+			state = MariaDB.getConnection().prepareStatement(
+					"INSERT INTO POSTING(Title, WriterEmail, Contents, WrittenDate, ReadCount, BoardId) VALUES(?,?,?,?,?,?)");
+			state.setString(1, posting.getTitle());
+			state.setString(2, posting.getWriterEmail());
+			state.setString(3, posting.getContents());
+			state.setString(4, posting.getWrittenDate());
+			state.setInt(5, posting.getReadCount());
+			System.out.println("POsting getBoardId -->" + posting.getBoardId());
+			state.setInt(6, Integer.parseInt(posting.getBoardId()));
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {

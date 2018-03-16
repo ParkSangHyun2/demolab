@@ -25,7 +25,9 @@ public class ClubEventHelper {
 
 	public void createClub(String clubName, String clubIntroduce) {
 		//
-		clubService.registerClub(new TravelClubDto(clubName, clubIntroduce));
+		TravelClubDto clubDto = new TravelClubDto(clubName, clubIntroduce);
+		clubDto.setUsid("0");
+		clubService.registerClub(clubDto);
 		TravelClubDto travelClub = clubService.findClubByName(clubName);
 		ClubMembershipDto clubMembershipDto = new ClubMembershipDto(travelClub.getUsid(), Session.loggedInMemberEmail);
 		clubMembershipDto.setRole(RoleInClub.President);
@@ -40,7 +42,10 @@ public class ClubEventHelper {
 		String clubId = next.getUsid();
 		String memberId = Session.loggedInMemberEmail;
 		for(ClubMembershipDto membership : next.getMembershipList() ) {
+			System.out.println(next);
+			System.out.println(next.getMembershipList());
 			if (membership.getMemberEmail().equals(memberId) && membership.getRole().toString().equals("President")) {
+				System.out.println("in");
 				clubService.remove(clubId);
 				return;
 			}

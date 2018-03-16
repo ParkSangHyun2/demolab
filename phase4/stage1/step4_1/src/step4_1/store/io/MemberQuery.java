@@ -82,10 +82,10 @@ public class MemberQuery {
 						result.getString("memberEmail"));
 				membership.setMemberName(result.getString("memberName"));
 				switch(result.getObject("role").toString()) {
-				case "President":
+				case "PRESIDENT":
 					membership.setRole(RoleInClub.President);
 					break;
-				case "Member":
+				case "MEMBER":
 					membership.setRole(RoleInClub.Member);
 					break;
 				}
@@ -131,10 +131,10 @@ public class MemberQuery {
 							membershipResult.getString("memberEmail"));
 					membership.setMemberName(membershipResult.getString("memberName"));
 					switch(membershipResult.getObject("role").toString()) {
-					case "President":
+					case "PRESIDENT":
 						membership.setRole(RoleInClub.President);
 						break;
-					case "Member":
+					case "MEMBER":
 						membership.setRole(RoleInClub.Member);
 						break;
 					}
@@ -160,6 +160,22 @@ public class MemberQuery {
 		String clubId;
 
 		try {
+			// Member자신의 정보가변할때 업데이트 
+			state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER WHERE EMAIL = ?", member.getEmail());
+			String nickName = member.getNickName();
+			String phoneNumber = member.getPhoneNumber();
+			String birthDay = member.getBirthDay();
+			
+			ResultSet memberResult = state.executeQuery();
+			if(memberResult.next()) {
+				state = MariaDB.runQuery("UPDATE COMMUNITYMEMBER SET NICKNAME = ?, PHONENUMBER = ? , BIRTHDAY = ? WHERE EMAIL = ?",
+						nickName, phoneNumber, birthDay, member.getEmail());
+				state.executeUpdate();
+				state.close();
+			}
+			
+			
+			//클럽맴버쉽이 사라지거나 새로생긴것을 알아내고 업데이트
 			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL= ?", member.getEmail());
 			ResultSet membershipResult = state.executeQuery();
 			state.close();
@@ -167,7 +183,7 @@ public class MemberQuery {
 				clubId = membershipResult.getString("CLUBID");
 				membershipList.add(new ClubMembership(clubId, member.getEmail()));
 			}
-			
+			// 새로 만들어야하는 맴버쉽
 			if(membershipList.isEmpty()) {
 				for(ClubMembership membership : member.getMembershipList()) {
 					state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)", membership.getClubId(),
@@ -177,7 +193,7 @@ public class MemberQuery {
 					state.close();
 				}
 			}
-
+			//없어지거나 새로생긴것을 업데이트
 			for (ClubMembership membership : member.getMembershipList()) {
 				for (ClubMembership dbMembership : membershipList) {
 					if(!member.getMembershipList().contains(dbMembership) && membership.getRole().toString().equals("Presidnet")) {

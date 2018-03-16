@@ -1,12 +1,11 @@
 package step4_1.store.io;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.RoleInClub;
@@ -20,8 +19,13 @@ public class ClubQuery {
 	public boolean exists(String id) {
 		//
 		boolean isExist = false;
-		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE USID = ?", id);
+		Connection connection = MariaDB.getConnection();
+
 		try {
+			state = connection.prepareStatement("SELECT * FROM TRAVELCLUB WHERE USID = ?");
+			System.out.println("ID .." + id);
+			state.setInt(1, Integer.parseInt(id));
+			
 			ResultSet result = state.executeQuery();
 			state.close();
 			while (result.next()) {
@@ -39,7 +43,7 @@ public class ClubQuery {
 
 	public void write(TravelClub club) {
 		//
-		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB VALUES(?,?,?,?,?)", UUID.randomUUID().toString(),
+		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB(Name,Intro,FoundationDay,BoardId) VALUES(?,?,?,?)",
 				club.getName(), club.getIntro(), club.getFoundationDay(), club.getBoardId());
 		try {
 			state.executeUpdate();
@@ -57,19 +61,24 @@ public class ClubQuery {
 		String[] values = new String[5];
 		TravelClub club = null;
 
-		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE USID = ?", clubId);
+		Connection connection = MariaDB.getConnection();	
+		String usid = null;
 		try {
+			state = connection.prepareStatement("SELECT * FROM TRAVELCLUB WHERE USID = ?");
+			state.setInt(1, Integer.parseInt(clubId));
 			ResultSet result = state.executeQuery();
 			state.close();
 			if (result.next()) {
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 4; i++) {
 					values[i] = result.getString(i + 1);
 				}
+				usid = Integer.toString(result.getInt("USID"));
 			}
 			if(!result.first()) {
 				return null;
 			}
 			club = new TravelClubDao(values).toTravelClub();
+			club.setUsid(usid);
 
 			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID = ?", clubId);
 			result = state.executeQuery();
@@ -103,6 +112,7 @@ public class ClubQuery {
 	public TravelClub readByName(String name) {
 		//
 		String[] values = new String[5];
+		String usid;
 		TravelClub club = null;
 		List<TravelClub> clubs = new ArrayList<>();
 
@@ -111,9 +121,10 @@ public class ClubQuery {
 			ResultSet result = state.executeQuery();
 			state.close();
 			if (result.next()) {
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 4; i++) {
 					values[i] = result.getString(i + 1);
 				}
+				usid = Integer.toString(result.getInt("USID"));
 			}else {
 				return null;
 			}
@@ -121,6 +132,7 @@ public class ClubQuery {
 
 			TravelClubDao travelClubDao = new TravelClubDao(values);
 			club = travelClubDao.toTravelClub();
+			club.setUsid(usid);
 
 			PreparedStatement travelClubState = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?",
 					name);
@@ -128,7 +140,7 @@ public class ClubQuery {
 			travelClubState.close();
 
 			while (clubResult.next()) {
-				ClubMembership membership = new ClubMembership(clubResult.getString("clubId"),
+				ClubMembership membership = new ClubMembership(Integer.toString(clubResult.getInt("clubId")),
 						clubResult.getString("memberEmail"));
 				membership.setMemberName(clubResult.getString("memberName"));
 				switch(clubResult.getObject("role").toString()) {
@@ -163,8 +175,11 @@ public class ClubQuery {
 
 		String memberEmail;
 
+		Connection connection = MariaDB.getConnection();
 		try {
-			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID= ?", club.getId());
+			state = connection.prepareStatement("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID= ?");
+			state.setInt(1, Integer.parseInt(club.getId()));
+			
 			ResultSet membershipResult = state.executeQuery();
 			state.close();
 			while (membershipResult.next()) {
@@ -173,9 +188,13 @@ public class ClubQuery {
 			}
 			if(membershipList.isEmpty()) {
 				for(ClubMembership membership : club.getMembershipList()) {
-					state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)", membership.getClubId(),
-							membership.getMemberEmail(), membership.getMemberName(),
-							membership.getRole().toString(), membership.getJoinDate());
+					state = connection.prepareStatement("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)");
+					state.setInt(1, Integer.parseInt(membership.getClubId()));
+					state.setString(2, membership.getMemberEmail());
+					state.setString(3, membership.getMemberName());
+					state.setString(4, membership.getRole().toString());
+					state.setString(5, membership.getJoinDate());
+
 					state.executeUpdate();
 					state.close();
 				}
@@ -184,9 +203,10 @@ public class ClubQuery {
 			for (ClubMembership membership : club.getMembershipList()) {
 				for (ClubMembership dbMembership : membershipList) {
 					if(!club.getMembershipList().contains(dbMembership) && membership.getRole().toString().equals("President")) {
-						state = MariaDB.runQuery(
-								"DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?",
-								dbMembership.getClubId(), dbMembership.getMemberEmail());
+						state = connection.prepareStatement("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
+						state.setInt(1, Integer.parseInt(dbMembership.getClubId()));
+						state.setString(2, dbMembership.getMemberEmail());
+						
 						state.executeUpdate();
 						System.out.println("INFO : " + dbMembership.getClubId() + ", " + dbMembership.getMemberEmail());
 						state.close();
@@ -194,9 +214,13 @@ public class ClubQuery {
 					}
 					
 					if (!(dbMembership.getMemberEmail().equals(membership.getMemberEmail()))) {
-						state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)", membership.getClubId(),
-								membership.getMemberEmail(), membership.getMemberName(),
-								membership.getRole().toString(), membership.getJoinDate());
+						state = connection.prepareStatement("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)");
+						state.setInt(1, Integer.parseInt(membership.getClubId()));
+						state.setString(2, membership.getMemberEmail());
+						state.setString(3, membership.getMemberName());
+						state.setString(4, membership.getRole().toString());
+						state.setString(5, membership.getJoinDate());
+
 						state.executeUpdate();
 						state.close();
 						break;
@@ -215,8 +239,11 @@ public class ClubQuery {
 
 	public void delete(String clubId) {
 		//
-		state = MariaDB.runQuery("DELETE FROM TRAVELCLUB WHERE USID = ?", clubId);
+		Connection connection = MariaDB.getConnection();
+		
 		try {
+			state = connection.prepareStatement("DELETE FROM TRAVELCLUB WHERE USID = ?");
+			state.setInt(1, Integer.parseInt(clubId));
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {
@@ -238,26 +265,31 @@ public class ClubQuery {
 			ResultSet result = state.executeQuery();
 			state.close();
 			while (result.next()) {
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 4; i++) {
 					values[i] = result.getString(i + 1);
 				}
-				clubs.add(new TravelClubDao(values).toTravelClub());
+				String usid = Integer.toString(result.getInt("Usid"));
+				TravelClub travelClub = new TravelClubDao(values).toTravelClub();
+				travelClub.setUsid(usid);
+				clubs.add(travelClub);
 			}
 			result.close();
 
 			for (TravelClub club : clubs) {
-				state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE clubId = ?", club.getUsid());
+				Connection connection = MariaDB.getConnection();
+				state = connection.prepareStatement("SELECT * FROM CLUBMEMBERSHIP WHERE clubId = ?");
+				state.setInt(1, Integer.parseInt(club.getUsid()));
 				result = state.executeQuery();
 				state.close();
 				while (result.next()) {
-					ClubMembership membership = new ClubMembership(result.getString("clubId"),
+					ClubMembership membership = new ClubMembership(Integer.toString(result.getInt("clubId")),
 							result.getString("memberEmail"));
 					membership.setMemberName(result.getString("memberName"));
 					switch(result.getObject("role").toString()) {
-					case "President":
+					case "PRESIDENT":
 						membership.setRole(RoleInClub.President);
 						break;
-					case "Member":
+					case "MEMBER":
 						membership.setRole(RoleInClub.Member);
 						break;
 					}

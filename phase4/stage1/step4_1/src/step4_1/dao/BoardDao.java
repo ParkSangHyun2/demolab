@@ -21,10 +21,9 @@ public class BoardDao {
 	public BoardDao(String...strings) {
 		//
 		this();
-		this.clubId = strings[0];
-		this.name = strings[1];
-		this.adminEmail = strings[2];
-		this.createDate = strings[3];
+		this.name = strings[0];
+		this.adminEmail = strings[1];
+		this.createDate = strings[2];
 	}
 	
 	public BoardDao(SocialBoard board) {
