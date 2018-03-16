@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="/Users/parksanghyun/Documents" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="/Users/parksanghyun/Namoosori_Teaching/demolab/phase3/stage1/step4" key="org.eclipse.jdt.ui.last.external.project"/>
+	<section name="quick_assist_proposal_size">
+	</section>
+	<section name="NewPackageWizardPage">
+		<item value="false" key="create_package_info_java"/>
+	</section>
+	<section name="BuildPathsPropertyPage">
+		<item value="3" key="pageIndex"/>
+	</section>
+	<section name="completion_proposal_size">
+	</section>
+	<section name="JavaElementSearchActions">
+	</section>
+</section>
