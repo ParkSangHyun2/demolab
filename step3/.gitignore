@@ -1,0 +1,28 @@
+#Compiled class file
+*.class
+
+#Log File
+*.log
+
+#BlueJ files
+*.ctxt
+
+#Mobile Tools for Java(J2ME)
+.mtj.tmp/
+
+# Package FIlesr
+*.war
+*.ear
+*.zip
+*.tar.gz
+*rar
+
+#Mac Finder file
+*.DS_Store
+
+#TempFolder
+RemoteSystemsTempFiles/
+
+#JavaStory git ignore File.
+/.metadata/
+/.recommenders/
