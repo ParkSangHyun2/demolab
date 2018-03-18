@@ -26,11 +26,7 @@ public class PostingDBStore implements PostingStore {
 	
 	@Override
 	public String create(Posting posting) {
-		// 
-		if (postingQuery.exists(posting.getId())) {
-			throw new MemberDuplicationException("Already exists: " + posting.getId()); 
-		}
-		
+		//
 		postingQuery.write(posting); 
 		return posting.getId();
 	}

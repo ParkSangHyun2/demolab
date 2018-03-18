@@ -13,34 +13,38 @@ import step4_1.dao.MemberDao;
 
 public class MemberQuery {
 	//
-	private static PreparedStatement state;
+	private PreparedStatement state;
+	private ResultSet resultSet;
 
 	public boolean exists(String id) {
 		//
 		boolean isExist = false;
-		state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER WHERE EMAIL = ?", id);
 		try {
-
-			ResultSet result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT EMAIL FROM COMMUNITYMEMBER WHERE EMAIL = ?");
+			state.setString(1,id);
+			resultSet = state.executeQuery();
 			state.close();
-			while (result.next()) {
-					isExist = true;
-					System.out.println("true");
+
+			if (resultSet.next()) {
+				isExist = true;
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
 		}
+
 		MariaDB.closeQuery();
 		return isExist;
 	}
 
 	public void write(CommunityMember member) {
 		//
-		state = MariaDB.runQuery(
-				"INSERT INTO COMMUNITYMEMBER VALUES(?,?,?,?,?)",
-				member.getEmail(),member.getName(), member.getNickName(), member.getPhoneNumber(), member.getBirthDay());
 		try {
+			state = MariaDB.runQuery("INSERT INTO COMMUNITYMEMBER(EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY) VALUES(?,?,?,?,?)");
+			state.setString(1, member.getEmail());
+			state.setString(2, member.getName());
+			state.setString(3, member.getNickName());
+			state.setString(4, member.getBirthDay());
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {
@@ -52,52 +56,35 @@ public class MemberQuery {
 
 	public CommunityMember read(String memberId) {
 		//
-		String[] values = new String[5];
-		CommunityMember member = new CommunityMember();
+		CommunityMember member = null;
+		ClubMembership membership;
 
-		state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER WHERE EMAIL = ?", memberId);
 		try {
-			ResultSet result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER WHERE EMAIL = ?");
+			state.setString(1, memberId);
+			resultSet = state.executeQuery();
 			state.close();
-			while (result.next()) {
-				values[0] = result.getString("EMAIL");
-				values[1] = result.getString("NAME");
-				values[2] = result.getString("NICKNAME");
-				values[3] = result.getString("PHONENUMBER");
-				values[4] = result.getString("BIRTHDAY");
-			}
-			if(!result.first()) {
+			if (resultSet.next()) {
+				member = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
+						resultSet.getString("NICKNAME"));
+				member.setPhoneNumber(resultSet.getString("PHONENUMBER"));
+				member.setBirthDay(resultSet.getString("BIRTHDAY"));
+			} else {
 				return null;
 			}
-			member = new MemberDao(values).toCommunityMember();
-			
-			System.out.println("member -->" + member.getEmail() + member.getName());
 
-			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL = ?", memberId);
-			result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL = ?");
+			state.setString(1, memberId);
+			resultSet = state.executeQuery();
 			state.close();
 
-			while (result.next()) {
-				ClubMembership membership = new ClubMembership(result.getString("clubId"),
-						result.getString("memberEmail"));
-				membership.setMemberName(result.getString("memberName"));
-				switch(result.getObject("role").toString()) {
-				case "PRESIDENT":
-					membership.setRole(RoleInClub.President);
-					break;
-				case "MEMBER":
-					membership.setRole(RoleInClub.Member);
-					break;
-				}
-				membership.setJoinDate(result.getString("joinDate"));
-				
-				System.out.println("hsip -->" + result.getShort("memberEmail"));
-				System.out.println("hsip -->" + result.getShort("memberName"));
-				System.out.println("hsip -->" + result.getShort("role"));
-				System.out.println("hsip -->" + result.getShort("joinDate"));
+			while (resultSet.next()) {
+				membership = new ClubMembership(resultSet.getString("CLUBID"), resultSet.getString("MEMBEREMAIL"));
+				membership.setMemberName(resultSet.getString("MEMBERNAME"));
+				membership.setRole(valueOfRole(resultSet.getString("ROLE")));
+				membership.setJoinDate(resultSet.getString("JOINDATE"));
 				member.getMembershipList().add(membership);
 			}
-
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
@@ -108,46 +95,42 @@ public class MemberQuery {
 
 	public List<CommunityMember> readByName(String name) {
 		//
-		String[] values = new String[5];
-		CommunityMember member = new CommunityMember();
+		CommunityMember communityMember = new CommunityMember();
+		ClubMembership membership;
+
+		PreparedStatement membershipState;
+		ResultSet membershipResult;
+
 		List<CommunityMember> members = new ArrayList<>();
 
-		state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER WHERE NAME = ?", name);
 		try {
-			ResultSet result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER WHERE NAME = ?");
+			state.setString(1, name);
+			resultSet = state.executeQuery();
 			state.close();
-			while (result.next()) {
-				for(int i=0; i<5; i++) {
-					values[i] = result.getString(i+1);
-				}
-				member = new MemberDao(values).toCommunityMember();
+			while (resultSet.next()) {
+				communityMember = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
+						resultSet.getString("NICKNAME"));
+				communityMember.setPhoneNumber(resultSet.getString("PHONENUMBER"));
+				communityMember.setBirthDay(resultSet.getString("BIRTHDAY"));
 
-				PreparedStatement membershipState = MariaDB
-						.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?", name);
-				ResultSet membershipResult = membershipState.executeQuery();
+				membershipState = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?");
+				membershipState.setString(1, name);
+				membershipResult = membershipState.executeQuery();
 
 				while (membershipResult.next()) {
-					ClubMembership membership = new ClubMembership(membershipResult.getString("clubId"),
-							membershipResult.getString("memberEmail"));
-					membership.setMemberName(membershipResult.getString("memberName"));
-					switch(membershipResult.getObject("role").toString()) {
-					case "PRESIDENT":
-						membership.setRole(RoleInClub.President);
-						break;
-					case "MEMBER":
-						membership.setRole(RoleInClub.Member);
-						break;
-					}
-					membership.setJoinDate(membershipResult.getString("joinDate"));
-
-					member.getMembershipList().add(membership);
+					membership = new ClubMembership(membershipResult.getString("CLUBID"),
+							membershipResult.getString("MEMBEREMAIL"));
+					membership.setMemberName(membershipResult.getString("MEMBERNAME"));
+					membership.setRole(valueOfRole(membershipResult.getString("ROLE")));
+					membership.setJoinDate(membershipResult.getString("JOINDATE"));
+					communityMember.getMembershipList().add(membership);
 				}
-				members.add(member);
+				members.add(communityMember);
 			}
-
 		} catch (SQLException e) {
 			//
-			System.out.println("readByName Exception :"+e.getMessage());
+			System.out.println("MemberQuery Exception --> " + e.getMessage());
 		}
 		MariaDB.closeQuery();
 		return members;
@@ -155,67 +138,68 @@ public class MemberQuery {
 
 	public void update(CommunityMember member) {
 		//
-		ArrayList<ClubMembership> membershipList = new ArrayList<>();
+		ArrayList<ClubMembership> comparedMembershipList = new ArrayList<>();
+		ResultSet memberResult;
+		ResultSet membershipResult;
 
 		String clubId;
 
 		try {
-			// Member자신의 정보가변할때 업데이트 
-			state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER WHERE EMAIL = ?", member.getEmail());
-			String nickName = member.getNickName();
-			String phoneNumber = member.getPhoneNumber();
-			String birthDay = member.getBirthDay();
-			
-			ResultSet memberResult = state.executeQuery();
-			if(memberResult.next()) {
-				state = MariaDB.runQuery("UPDATE COMMUNITYMEMBER SET NICKNAME = ?, PHONENUMBER = ? , BIRTHDAY = ? WHERE EMAIL = ?",
-						nickName, phoneNumber, birthDay, member.getEmail());
-				state.executeUpdate();
-				state.close();
-			}
-			
-			
-			//클럽맴버쉽이 사라지거나 새로생긴것을 알아내고 업데이트
-			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL= ?", member.getEmail());
-			ResultSet membershipResult = state.executeQuery();
+			// Member자신의 정보가변할때 업데이트
+			state = MariaDB.runQuery("UPDATE COMMUNITYMEMBER SET NICKNAME = ?, PHONENUMBER = ? , BIRTHDAY = ? WHERE EMAIL = ?");
+			state.setString(1, member.getEmail());
+			state.setString(2, member.getPhoneNumber());
+			state.setString(3, member.getBirthDay());
+			state.setString(4, member.getEmail());
+			state.executeUpdate();
+			state.close();
+
+			// 클럽맴버쉽이 사라지거나 새로생긴것을 알아내고 업데이트
+			state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL= ?");
+			state.setString(1, member.getEmail());
+			membershipResult = state.executeQuery();
 			state.close();
 			while (membershipResult.next()) {
-				clubId = membershipResult.getString("CLUBID");
-				membershipList.add(new ClubMembership(clubId, member.getEmail()));
+				comparedMembershipList.add(new ClubMembership(membershipResult.getString("CLUBID"), member.getEmail()));
 			}
+
 			// 새로 만들어야하는 맴버쉽
-			if(membershipList.isEmpty()) {
-				for(ClubMembership membership : member.getMembershipList()) {
-					state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)", membership.getClubId(),
-							membership.getMemberEmail(), membership.getMemberName(),
-							membership.getRole().toString(), membership.getJoinDate());
+			if (comparedMembershipList.isEmpty()) {
+				for (ClubMembership membership : member.getMembershipList()) {
+					state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE) VALUES(?,?,?,?,?)");
+					state.setInt(1, Integer.parseInt(membership.getClubId()));
+					state.setString(2, membership.getMemberEmail());
+					state.setString(3, membership.getMemberName());
+					state.setString(4, membership.getRole().toString());
+					state.setString(5, membership.getJoinDate());
 					state.executeUpdate();
 					state.close();
 				}
 			}
-			//없어지거나 새로생긴것을 업데이트
+			// 없어지거나 새로생긴것을 업데이트
 			for (ClubMembership membership : member.getMembershipList()) {
-				for (ClubMembership dbMembership : membershipList) {
-					if(!member.getMembershipList().contains(dbMembership) && membership.getRole().toString().equals("Presidnet")) {
-						state = MariaDB.runQuery(
-								"DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?",
-								dbMembership.getClubId(), dbMembership.getMemberEmail());
+				for (ClubMembership dbMembership : comparedMembershipList) {
+					if (!member.getMembershipList().contains(dbMembership) && membership.getRole().toString().equals("PRESIDENT")) {
+						state = MariaDB.runQuery("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
+						state.setInt(1, Integer.parseInt(dbMembership.getClubId()));
+						state.setString(2, dbMembership.getMemberEmail());
 						state.executeUpdate();
 						state.close();
 						break;
 					}
-					
+
 					if (!(dbMembership.getClubId().equals(membership.getClubId()))) {
-						state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)", membership.getClubId(),
-								membership.getMemberEmail(), membership.getMemberName(),
-								membership.getRole().toString(), membership.getJoinDate());
+						state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE) VALUES(?,?,?,?,?)");
+						state.setInt(1, Integer.parseInt(membership.getClubId()));
+						state.setString(2, membership.getMemberEmail());
+						state.setString(3, membership.getMemberName());
+						state.setString(4, membership.getRole().toString());
+						state.setString(5, membership.getJoinDate());
 						state.executeUpdate();
 						break;
 					}
 				}
-
 			}
-
 			state.close();
 		} catch (SQLException e) {
 			//
@@ -226,8 +210,9 @@ public class MemberQuery {
 
 	public void delete(String memberId) {
 		//
-		state = MariaDB.runQuery("DELETE FROM COMMUNITYMEMBER" + "WHERE EMAIL = ?", memberId);
 		try {
+			state = MariaDB.runQuery("DELETE FROM COMMUNITYMEMBER WHERE EMAIL = ?");
+			state.setString(1, memberId);
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {
@@ -242,42 +227,56 @@ public class MemberQuery {
 		List<CommunityMember> members = new ArrayList<>();
 
 		String[] values = new String[5];
-		CommunityMember member = new CommunityMember();
+		CommunityMember communityMember;
+		ClubMembership membership;
 
-		state = MariaDB.runQuery("SELECT * FROM COMMUNITYMEMBER ");
+		
 		try {
-			ResultSet result = state.executeQuery();
-			while (result.next()) {
-				for(int i=0; i<5; i++) {
-					values[i] = result.getString(i+1);
-				}
+			state = MariaDB.runQuery("SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER ");
+			resultSet = state.executeQuery();
+			
+			while (resultSet.next()) {
+				communityMember = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"), resultSet.getString("PHONENUMBER"));
+				communityMember.setNickName(resultSet.getString("NICKNAME"));
+				communityMember.setBirthDay(resultSet.getString("BIRTHDAY"));
+				resultSet.close();
 
-				member = new MemberDao(values).toCommunityMember();
-				result.close();
-				
-				state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?",member.getEmail());
-				result = state.executeQuery();
+				state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?");
+				state.setString(1, communityMember.getEmail());
+				resultSet = state.executeQuery();
 				state.close();
 
-				while (result.next()) {
-					ClubMembership membership = new ClubMembership(result.getString("clubId"),
-							result.getString("memberEmail"));
-					membership.setMemberName(result.getString("memberName"));
-					membership.setRole((RoleInClub) result.getObject("role"));
-					membership.setJoinDate(result.getString("joinDate"));
+				while (resultSet.next()) {
+					membership = new ClubMembership(resultSet.getString("CLUBID"), resultSet.getString("MEMBEREMAIL"));
+					membership.setMemberName(resultSet.getString("MEMBERNAME"));
+					membership.setRole(valueOfRole(resultSet.getString("ROLE")));
+					membership.setJoinDate(resultSet.getString("JOINDATE"));
+					communityMember.getMembershipList().add(membership);
 
-					member.getMembershipList().add(membership);
-					
 				}
-				result.close();
-				members.add(member);
+				resultSet.close();
+				members.add(communityMember);
 			}
 		} catch (SQLException e) {
 			//
-			System.out.println(e.getMessage());
+			System.out.println("Member Query Exception --> " + e.getMessage());
 		}
 		MariaDB.closeQuery();
 		return members;
+	}
+
+	private RoleInClub valueOfRole(String role) {
+		//
+		RoleInClub roleInClub = null;
+		switch (role) {
+		case "MEMBER":
+			roleInClub = RoleInClub.Member;
+			break;
+		case "PRESIDENT":
+			roleInClub = RoleInClub.President;
+			break;
+		}
+		return roleInClub;
 	}
 
 }

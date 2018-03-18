@@ -39,7 +39,6 @@ public class PostingServiceLogic implements PostingService {
 			throw new NoSuchBoardException("No such board with id --> " + boardId);
 		}
 		Posting posting = postingDto.toPostingIn(board);
-
 		return postingStore.create(posting);
 	}
 

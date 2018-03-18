@@ -1,6 +1,5 @@
 package step4_1.store.io;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,27 +9,23 @@ import java.util.List;
 import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.RoleInClub;
 import step1.share.domain.entity.club.TravelClub;
-import step4_1.dao.TravelClubDao;
 
 public class ClubQuery {
 	//
 	private PreparedStatement state;
+	private ResultSet resultSet;
 
 	public boolean exists(String id) {
 		//
 		boolean isExist = false;
-		Connection connection = MariaDB.getConnection();
-
 		try {
-			state = connection.prepareStatement("SELECT * FROM TRAVELCLUB WHERE USID = ?");
-			System.out.println("ID .." + id);
+			state = MariaDB.runQuery("SELECT USID FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(id));
-			
-			ResultSet result = state.executeQuery();
+			resultSet = state.executeQuery();
 			state.close();
-			while (result.next()) {
+			
+			if(resultSet.next()) {
 				isExist = true;
-				System.out.println("true");
 			}
 		} catch (SQLException e) {
 			//
@@ -43,9 +38,12 @@ public class ClubQuery {
 
 	public void write(TravelClub club) {
 		//
-		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB(Name,Intro,FoundationDay,BoardId) VALUES(?,?,?,?)",
-				club.getName(), club.getIntro(), club.getFoundationDay(), club.getBoardId());
+		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB(NAME,INTRO,FOUNDATION,BOARDID) VALUES(?,?,?,?)");
 		try {
+			state.setString(1, club.getName());
+			state.setString(2, club.getIntro());
+			state.setString(3, club.getFoundationDay());
+			state.setString(4, club.getBoardId());
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {
@@ -53,57 +51,43 @@ public class ClubQuery {
 			System.out.println(e.getMessage());
 		}
 		MariaDB.closeQuery();
-
 	}
 
 	public TravelClub read(String clubId) {
 		//
-		String[] values = new String[5];
 		TravelClub club = null;
-
-		Connection connection = MariaDB.getConnection();	
-		String usid = null;
+		
 		try {
-			state = connection.prepareStatement("SELECT * FROM TRAVELCLUB WHERE USID = ?");
+			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(clubId));
-			ResultSet result = state.executeQuery();
+			resultSet = state.executeQuery();
 			state.close();
-			if (result.next()) {
-				for (int i = 0; i < 4; i++) {
-					values[i] = result.getString(i + 1);
-				}
-				usid = Integer.toString(result.getInt("USID"));
-			}
-			if(!result.first()) {
+			
+			if(resultSet.next()) {
+			club =  new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
+			club.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
+			club.setBoardId(resultSet.getString("BOARDID"));
+			club.setUsid(Integer.toString(resultSet.getInt("USID")));
+			} else {
 				return null;
 			}
-			club = new TravelClubDao(values).toTravelClub();
-			club.setUsid(usid);
 
-			state = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID = ?", clubId);
-			result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE CLUBID = ?");
+			state.setInt(1, Integer.parseInt(clubId));
+			resultSet = state.executeQuery();
 			state.close();
 
-			while (result.next()) {
-				ClubMembership membership = new ClubMembership(result.getString("clubId"),
-						result.getString("memberEmail"));
-				membership.setMemberName(result.getString("memberName"));
-				switch(result.getObject("role").toString()) {
-				case "President":
-					membership.setRole(RoleInClub.President);
-					break;
-				case "Member":
-					membership.setRole(RoleInClub.Member);
-					break;
-				}
-				membership.setJoinDate(result.getString("joinDate"));
-
+			while (resultSet.next()) {
+				ClubMembership membership = new ClubMembership(resultSet.getString("CLUBID"),resultSet.getString("MEMBEREMAIL"));
+				membership.setMemberName(resultSet.getString("MEMBERNAME"));
+				membership.setRole(valueOfRole(resultSet.getString("ROLE")));
+				membership.setJoinDate(resultSet.getString("JOINDATE"));
 				club.getMembershipList().add(membership);
 			}
 
 		} catch (SQLException e) {
 			//
-			System.out.println(e.getMessage());
+			System.out.println("ClubQuery Exception -->" + e.getMessage());
 		}
 		MariaDB.closeQuery();
 		return club;
@@ -111,62 +95,42 @@ public class ClubQuery {
 
 	public TravelClub readByName(String name) {
 		//
-		String[] values = new String[5];
-		String usid;
 		TravelClub club = null;
-		List<TravelClub> clubs = new ArrayList<>();
-
-		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB WHERE NAME = ?", name);
+		
 		try {
-			ResultSet result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB WHERE NAME = ?");
+			state.setString(1, name);
+			resultSet = state.executeQuery();
 			state.close();
-			if (result.next()) {
-				for (int i = 0; i < 4; i++) {
-					values[i] = result.getString(i + 1);
-				}
-				usid = Integer.toString(result.getInt("USID"));
-			}else {
+			
+			if(resultSet.next()) {
+			club =  new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
+			club.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
+			club.setBoardId(resultSet.getString("BOARDID"));
+			club.setUsid(Integer.toString(resultSet.getInt("USID")));
+			} else {
 				return null;
 			}
-			
 
-			TravelClubDao travelClubDao = new TravelClubDao(values);
-			club = travelClubDao.toTravelClub();
-			club.setUsid(usid);
+			state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE CLUBID = ?");
+			state.setInt(1, Integer.parseInt(club.getUsid()));
+			resultSet = state.executeQuery();
+			state.close();
 
-			PreparedStatement travelClubState = MariaDB.runQuery("SELECT * FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?",
-					name);
-			ResultSet clubResult = travelClubState.executeQuery();
-			travelClubState.close();
-
-			while (clubResult.next()) {
-				ClubMembership membership = new ClubMembership(Integer.toString(clubResult.getInt("clubId")),
-						clubResult.getString("memberEmail"));
-				membership.setMemberName(clubResult.getString("memberName"));
-				switch(clubResult.getObject("role").toString()) {
-				case "President":
-					membership.setRole(RoleInClub.President);
-					break;
-				case "Member":
-					membership.setRole(RoleInClub.Member);
-					break;
-				}
-				membership.setJoinDate(clubResult.getString("joinDate"));
-
+			while (resultSet.next()) {
+				ClubMembership membership = new ClubMembership(resultSet.getString("CLUBID"),resultSet.getString("MEMBEREMAIL"));
+				membership.setMemberName(resultSet.getString("MEMBERNAME"));
+				membership.setRole(valueOfRole(resultSet.getString("ROLE")));
+				membership.setJoinDate(resultSet.getString("JOINDATE"));
 				club.getMembershipList().add(membership);
 			}
-			clubs.add(club);
 
 		} catch (SQLException e) {
 			//
-			System.out.println("readByName Exception :" + e.getMessage());
+			System.out.println("ClubQuery Exception -->" + e.getMessage());
 		}
 		MariaDB.closeQuery();
-		if (clubs.isEmpty()) {
-			return null;
-		}
-
-		return clubs.get(0);
+		return club;
 	}
 
 	public void update(TravelClub club) {
@@ -175,60 +139,56 @@ public class ClubQuery {
 
 		String memberEmail;
 
-		Connection connection = MariaDB.getConnection();
 		try {
-			state = connection.prepareStatement("SELECT * FROM CLUBMEMBERSHIP WHERE CLUBID= ?");
+			state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE CLUBID = ?");
 			state.setInt(1, Integer.parseInt(club.getId()));
-			
-			ResultSet membershipResult = state.executeQuery();
+			resultSet = state.executeQuery();
 			state.close();
-			while (membershipResult.next()) {
-				memberEmail = membershipResult.getString("memberEmail");
+			
+			while (resultSet.next()) {
+				memberEmail = resultSet.getString("memberEmail");
 				membershipList.add(new ClubMembership(club.getUsid(), memberEmail));
 			}
+			
 			if(membershipList.isEmpty()) {
 				for(ClubMembership membership : club.getMembershipList()) {
-					state = connection.prepareStatement("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)");
+					state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBERMAIL, MEMBERNAME, ROLE, JOINDATE) VALUES(?,?,?,?,?)");
 					state.setInt(1, Integer.parseInt(membership.getClubId()));
 					state.setString(2, membership.getMemberEmail());
 					state.setString(3, membership.getMemberName());
 					state.setString(4, membership.getRole().toString());
 					state.setString(5, membership.getJoinDate());
-
 					state.executeUpdate();
 					state.close();
 				}
+			} else {
+				return;
 			}
 
 			for (ClubMembership membership : club.getMembershipList()) {
-				for (ClubMembership dbMembership : membershipList) {
-					if(!club.getMembershipList().contains(dbMembership) && membership.getRole().toString().equals("President")) {
-						state = connection.prepareStatement("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
-						state.setInt(1, Integer.parseInt(dbMembership.getClubId()));
-						state.setString(2, dbMembership.getMemberEmail());
-						
+				for (ClubMembership membershipInDb : membershipList) {
+					if(!club.getMembershipList().contains(membershipInDb) && membership.getRole().toString().equals("President")) {
+						state = MariaDB.runQuery("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
+						state.setInt(1, Integer.parseInt(membershipInDb.getClubId()));
+						state.setString(2, membershipInDb.getMemberEmail());
 						state.executeUpdate();
-						System.out.println("INFO : " + dbMembership.getClubId() + ", " + dbMembership.getMemberEmail());
 						state.close();
 						break;
 					}
 					
-					if (!(dbMembership.getMemberEmail().equals(membership.getMemberEmail()))) {
-						state = connection.prepareStatement("INSERT INTO CLUBMEMBERSHIP VALUES(?,?,?,?,?)");
+					if (!(membershipInDb.getMemberEmail().equals(membership.getMemberEmail()))) {
+						state = MariaDB.runQuery("INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBERMAIL, MEMBERNAME, ROLE, JOINDATE) VALUES(?,?,?,?,?)");
 						state.setInt(1, Integer.parseInt(membership.getClubId()));
 						state.setString(2, membership.getMemberEmail());
 						state.setString(3, membership.getMemberName());
 						state.setString(4, membership.getRole().toString());
 						state.setString(5, membership.getJoinDate());
-
 						state.executeUpdate();
 						state.close();
 						break;
 					}
 				}
-
 			}
-
 			state.close();
 		} catch (SQLException e) {
 			//
@@ -239,10 +199,8 @@ public class ClubQuery {
 
 	public void delete(String clubId) {
 		//
-		Connection connection = MariaDB.getConnection();
-		
 		try {
-			state = connection.prepareStatement("DELETE FROM TRAVELCLUB WHERE USID = ?");
+			state = MariaDB.runQuery("DELETE FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(clubId));
 			state.executeUpdate();
 			state.close();
@@ -255,59 +213,59 @@ public class ClubQuery {
 
 	public List<TravelClub> readAll() {
 		//
-		List<TravelClub> clubs = new ArrayList<>();
+		List<TravelClub> travelClubs = new ArrayList<>();
 		List<TravelClub> resultClubs = new ArrayList<>();
-
-		String[] values = new String[5];
-
-		state = MariaDB.runQuery("SELECT * FROM TRAVELCLUB ");
+		
 		try {
-			ResultSet result = state.executeQuery();
+			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB ");
+			resultSet = state.executeQuery();
 			state.close();
-			while (result.next()) {
-				for (int i = 0; i < 4; i++) {
-					values[i] = result.getString(i + 1);
-				}
-				String usid = Integer.toString(result.getInt("Usid"));
-				TravelClub travelClub = new TravelClubDao(values).toTravelClub();
-				travelClub.setUsid(usid);
-				clubs.add(travelClub);
+			
+			while (resultSet.next()) {
+				TravelClub travelClub =  new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
+				travelClub.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
+				travelClub.setBoardId(resultSet.getString("BOARDID"));
+				travelClub.setUsid(Integer.toString(resultSet.getInt("USID")));
+				travelClubs.add(travelClub);
 			}
-			result.close();
 
-			for (TravelClub club : clubs) {
-				Connection connection = MariaDB.getConnection();
-				state = connection.prepareStatement("SELECT * FROM CLUBMEMBERSHIP WHERE clubId = ?");
-				state.setInt(1, Integer.parseInt(club.getUsid()));
-				result = state.executeQuery();
+			for (TravelClub travelClub : travelClubs) {
+				state = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE CLUBID = ?");
+				state.setInt(1, Integer.parseInt(travelClub.getUsid()));
+				resultSet = state.executeQuery();
 				state.close();
-				while (result.next()) {
-					ClubMembership membership = new ClubMembership(Integer.toString(result.getInt("clubId")),
-							result.getString("memberEmail"));
-					membership.setMemberName(result.getString("memberName"));
-					switch(result.getObject("role").toString()) {
-					case "PRESIDENT":
-						membership.setRole(RoleInClub.President);
-						break;
-					case "MEMBER":
-						membership.setRole(RoleInClub.Member);
-						break;
-					}
-					membership.setJoinDate(result.getString("joinDate"));
-
-					club.getMembershipList().add(membership);
-
+				
+				while (resultSet.next()) {
+					ClubMembership membership = new ClubMembership(Integer.toString(resultSet.getInt("CLUBID")),resultSet.getString("MEMBEREMAIL"));
+					membership.setMemberName(resultSet.getString("MEMBERNAME"));
+					membership.setRole(valueOfRole(resultSet.getString("ROLE")));
+					membership.setJoinDate(resultSet.getString("JOINDATE"));
+					travelClub.getMembershipList().add(membership);
 				}
-				result.close();
-				resultClubs.add(club);
+				resultSet.close();
+				resultClubs.add(travelClub);
 			}
 
 		} catch (SQLException e) {
 			//
-			System.out.println(e.getMessage());
+			System.out.println("TravelClub READALL Exception -->" + e.getMessage());
 		}
 		MariaDB.closeQuery();
-		return clubs;
+		return resultClubs;
+	}
+	
+	private RoleInClub valueOfRole(String role) {
+		//
+		RoleInClub roleInClub = null;
+		switch(role) {
+		case "MEMBER":
+			roleInClub = RoleInClub.Member;
+			break;
+		case "PRESIDENT":
+			roleInClub = RoleInClub.President;
+			break;
+		}
+		return roleInClub;
 	}
 
 }

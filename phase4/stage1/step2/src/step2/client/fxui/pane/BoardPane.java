@@ -82,13 +82,14 @@ public class BoardPane {
 
 					/**
 					 * If you click the mouse, you should increase the number in the 'readCount' column of TableView.
+					 * sanghyun..
 					 */
 					PostingDto posting = selectedItem.iterator().next(); 
 					selectedIndex = postingTable.getSelectionModel().getSelectedIndex();
 					posting.setReadCount(
 							posting.getReadCount()+1
 							);
-					boardEvents.modifyPosting(posting,titleField, articleField);
+					boardEvents.increaseReadCount(posting);
 					initializePostList(postingTable);
 					postingTable.getSelectionModel().select(selectedIndex);
 				}

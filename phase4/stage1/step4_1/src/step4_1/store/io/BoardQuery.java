@@ -12,21 +12,25 @@ import step4_1.dao.BoardDao;
 public class BoardQuery {
 	//
 	private PreparedStatement state;
+	private ResultSet resultSet;
 
 	public boolean exists(String id) {
 		//
 		boolean isExist = false;
-		state = MariaDB.runQuery("SELECT * FROM SOCIALBOARD WHERE CLUBID = ?", id);
 		try {
-			ResultSet result = state.executeQuery();
-			while (result.next()) {
+			state = MariaDB.runQuery("SELECT CLUBID FROM SOCIALBOARD WHERE CLUBID = ?");
+			state.setInt(1, Integer.parseInt(id));
+			resultSet = state.executeQuery();
+			state.close();
+			
+			if(resultSet.next()) {
 				isExist = true;
-				System.out.println("true");
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
 		}
+		
 		MariaDB.closeQuery();
 		return isExist;
 	}
@@ -34,43 +38,35 @@ public class BoardQuery {
 	public void write(SocialBoard board) {
 		//
 		try {
-			state = MariaDB.getConnection().prepareStatement(
-					"INSERT INTO SOCIALBOARD(Name, AdminEmail, CreateDate, Sequence, clubId) VALUES(?,?,?,?,?)"
-					);
-			state.setString(1, "board");
+			state = MariaDB.runQuery("INSERT INTO SOCIALBOARD(NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID) VALUES(?,?,?,?,?)");
+			state.setString(1, board.getName());//안되면 임의지정.
 			state.setString(2, board.getAdminEmail());
 			state.setString(3, board.getCreateDate());
 			state.setInt(4, 0);
 			state.setString(5, board.getId());
-
 			state.executeUpdate();
 		} catch (SQLException e) {
 			//
-			System.out.println(e.getMessage());
+			System.out.println("BoardQuery Exception --> " + e.getMessage());
 		}
 		MariaDB.closeQuery();
 	}
 
 	public SocialBoard read(String boardId) {
 		//
-		String[] values = new String[5];
-		int clubId;
 		SocialBoard board = null;
-
-		state = MariaDB.runQuery("SELECT * FROM SOCIALBOARD WHERE CLUBID = ?", boardId);
+		
 		try {
-			ResultSet result = state.executeQuery();
-			if (result.next()) {
-				for (int i = 0; i < 3; i++) {
-					values[i] = result.getString(i + 1);
-				}
-				clubId = result.getInt("ClubId");
+			state = MariaDB.runQuery("SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID FROM SOCIALBOARD WHERE CLUBID = ?");
+			state.setInt(1, Integer.parseInt(boardId));
+			resultSet = state.executeQuery();
+			state.close();
+			if (resultSet.next()) {
+				board = new SocialBoard(Integer.toString(resultSet.getInt("CLUBID")), resultSet.getString("NAME"), resultSet.getString("ADMINEMAIL"));
+				board.setCreateDate(resultSet.getString("CREATEDATE"));
 			} else {
-				return board;
+				return null;
 			}
-			board = new BoardDao(values).toSocialBoard();
-			board.setClubId(Integer.toString(clubId));
-
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
@@ -81,22 +77,19 @@ public class BoardQuery {
 
 	public List<SocialBoard> readByName(String name) {
 		//
-		String[] values = new String[5];
 		SocialBoard board = null;
 		List<SocialBoard> boards = new ArrayList<>();
 
-		state = MariaDB.runQuery("SELECT * FROM SOCIALBOARD WHERE NAME = ?", name);
 		try {
-			ResultSet result = state.executeQuery();
-			if (result.next()) {
-				for (int i = 0; i < 4; i++) {
-					values[i] = result.getString(i + 1);
-				}
+			state = MariaDB.runQuery("SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID FROM SOCIALBOARD WHERE NAME = ?");
+			state.setString(1, name);
+			
+			resultSet = state.executeQuery();
+			while (resultSet.next()) {
+				board = new SocialBoard(Integer.toString(resultSet.getInt("CLUBID")), resultSet.getString("NAME"), resultSet.getString("ADMINEMAIL"));
+				board.setCreateDate(resultSet.getString("CREATEDATE"));
+				boards.add(board);
 			}
-
-			board = new BoardDao(values).toSocialBoard();
-			boards.add(board);
-
 		} catch (SQLException e) {
 			//
 			System.out.println("readByName Exception :" + e.getMessage());
@@ -110,14 +103,15 @@ public class BoardQuery {
 
 	public void delete(String boardId) {
 		//
-		state = MariaDB.runQuery("DELETE FROM SOCIALBOARD WHERE = ?", boardId);
 		try {
+			state = MariaDB.runQuery("DELETE FROM SOCIALBOARD WHERE = ?");
+			state.setInt(1, Integer.parseInt(boardId));
 			state.executeUpdate();
+			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("BOARD QUERY EXCEPTION -->" + e.getMessage());
 		}
 		MariaDB.closeQuery();
 	}
-
 }

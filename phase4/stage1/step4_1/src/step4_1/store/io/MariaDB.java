@@ -17,14 +17,10 @@ public class MariaDB {
 		//
 	}
 	
-	public static PreparedStatement runQuery(String query, String...values) {
+	public static PreparedStatement runQuery(String query) {
 		try {
 			connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/" + DATABASE_NAME, USER_NAME, PASSWORD);
 			state = connection.prepareStatement(query);
-			
-			for(int i =1; i <= values.length; i++) {
-				state.setString(i, values[i-1]);
-			}
 		} catch (SQLException e) {
 			//
 			System.out.println("Maria_db RunQuery Exception---> " + e.getMessage());

@@ -49,6 +49,11 @@ public class BoardEventHelper {
 			AlertBox.alert("Info", "Permission Denied");
 		}
 	}
+	
+	public void increaseReadCount(PostingDto posting) {
+		//
+		postingService.modify(posting);
+	}
 
 	public void deletePosting(PostingDto posting) {
 		//
