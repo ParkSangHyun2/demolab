@@ -186,6 +186,8 @@ public class ClubServiceLogic implements ClubService {
 		// remove membership
 		foundClub.getMembershipList().remove(clubMembership);
 		clubStore.update(foundClub);
+		
+		foundMember = memberStore.retrieve(memberId);
 		foundMember.getMembershipList().remove(clubMembership);
 		memberStore.update(foundMember);
 		

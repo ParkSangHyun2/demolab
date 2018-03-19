@@ -1,20 +1,28 @@
 package step4_1.store;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
 import step1.share.service.store.MemberStore;
 import step1.share.util.MemberDuplicationException;
+import step4_1.store.io.ClubQuery;
 import step4_1.store.io.MemberQuery;
+import step4_1.store.io.MembershipQuery;
 
 public class MemberDBStore implements MemberStore {
 	//
 	private MemberQuery memberQuery; 
+	private ClubQuery clubQuery;
+	private MembershipQuery membershipQuery;
 	
 	public MemberDBStore() {
 		//  
 		this.memberQuery = new MemberQuery(); 
+		this.membershipQuery = new MembershipQuery();
+		this.clubQuery = new ClubQuery();
 	}
 	
 	@Override
@@ -29,11 +37,14 @@ public class MemberDBStore implements MemberStore {
 	}
 
 	@Override
-	public CommunityMember retrieve(String memberId) {
+	public CommunityMember retrieve(String memberEmail) {
 		//
-		CommunityMember member = memberQuery.read(memberId);
-		if(member == null) {
-			return null;
+		CommunityMember member = memberQuery.read(memberEmail);
+		List<ClubMembership> membershipList = new ArrayList<>(); 
+		membershipList = membershipQuery.readByMemberEmail(memberEmail);
+		
+		if(member != null) {
+			member.getMembershipList().addAll(membershipList);
 		}
 		return member; 
 	}
@@ -41,7 +52,17 @@ public class MemberDBStore implements MemberStore {
 	@Override
 	public List<CommunityMember> retrieveByName(String name) {
 		//
-		return memberQuery.readByName(name); 
+		List<CommunityMember> members = new ArrayList<>(); 
+		members = memberQuery.readByName(name);
+		
+		List<ClubMembership> membershipList = new ArrayList<>();
+		membershipList = membershipQuery.readByMemberName(name);
+		
+		for(CommunityMember member : members) {
+			member.getMembershipList().addAll(membershipList);
+		}
+		
+		return members;
 	}
 
 	@Override
@@ -51,7 +72,12 @@ public class MemberDBStore implements MemberStore {
 			throw new NoSuchElementException("No such a member with email: " + member.getId()); 
 		}
 		
-		memberQuery.update(member); 
+		if(membershipQuery.createMembershipForMember(member)) {
+			return;
+		}
+		memberQuery.update(member);
+		membershipQuery.checkDeletedMembershipForMember(member);
+		membershipQuery.checkCreatedMembershipForMember(member);
 	}
 
 	@Override
@@ -69,6 +95,15 @@ public class MemberDBStore implements MemberStore {
 	@Override
 	public List<CommunityMember> retrieveAll() {
 		//
-		return memberQuery.readAll();
+		List<CommunityMember> members = new ArrayList<CommunityMember>();
+		List<ClubMembership> memberships = new ArrayList<ClubMembership>();
+		
+		members = memberQuery.readAll();
+		for(CommunityMember member : members) {
+			String memberEmail = member.getEmail();
+			memberships = membershipQuery.readByMemberEmail(memberEmail);
+			member.getMembershipList().addAll(memberships);
+		}
+		return members; 
 	}
 }
