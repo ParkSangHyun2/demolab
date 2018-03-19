@@ -9,7 +9,6 @@ import java.util.List;
 import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
 import step1.share.domain.entity.club.RoleInClub;
-import step4_1.dao.MemberDao;
 
 public class MemberQuery {
 	//
@@ -40,11 +39,10 @@ public class MemberQuery {
 	public void write(CommunityMember member) {
 		//
 		try {
-			state = MariaDB.runQuery("INSERT INTO COMMUNITYMEMBER(EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY) VALUES(?,?,?,?,?)");
+			state = MariaDB.runQuery("INSERT INTO COMMUNITYMEMBER(EMAIL, NAME, PHONENUMBER) VALUES(?,?,?)");
 			state.setString(1, member.getEmail());
 			state.setString(2, member.getName());
-			state.setString(3, member.getNickName());
-			state.setString(4, member.getBirthDay());
+			state.setString(3, member.getPhoneNumber());
 			state.executeUpdate();
 			state.close();
 		} catch (SQLException e) {
@@ -66,8 +64,8 @@ public class MemberQuery {
 			state.close();
 			if (resultSet.next()) {
 				member = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
-						resultSet.getString("NICKNAME"));
-				member.setPhoneNumber(resultSet.getString("PHONENUMBER"));
+						resultSet.getString("PHONENUMBER"));
+				member.setNickName(resultSet.getString("NICKNAME"));
 				member.setBirthDay(resultSet.getString("BIRTHDAY"));
 			} else {
 				return null;
@@ -79,7 +77,7 @@ public class MemberQuery {
 			state.close();
 
 			while (resultSet.next()) {
-				membership = new ClubMembership(resultSet.getString("CLUBID"), resultSet.getString("MEMBEREMAIL"));
+				membership = new ClubMembership(Integer.toString(resultSet.getInt("CLUBID")), resultSet.getString("MEMBEREMAIL"));
 				membership.setMemberName(resultSet.getString("MEMBERNAME"));
 				membership.setRole(valueOfRole(resultSet.getString("ROLE")));
 				membership.setJoinDate(resultSet.getString("JOINDATE"));
@@ -110,8 +108,8 @@ public class MemberQuery {
 			state.close();
 			while (resultSet.next()) {
 				communityMember = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
-						resultSet.getString("NICKNAME"));
-				communityMember.setPhoneNumber(resultSet.getString("PHONENUMBER"));
+						resultSet.getString("PHONENUMBER"));
+				communityMember.setNickName(resultSet.getString("NICKNAME"));
 				communityMember.setBirthDay(resultSet.getString("BIRTHDAY"));
 
 				membershipState = MariaDB.runQuery("SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?");
@@ -147,7 +145,7 @@ public class MemberQuery {
 		try {
 			// Member자신의 정보가변할때 업데이트
 			state = MariaDB.runQuery("UPDATE COMMUNITYMEMBER SET NICKNAME = ?, PHONENUMBER = ? , BIRTHDAY = ? WHERE EMAIL = ?");
-			state.setString(1, member.getEmail());
+			state.setString(1, member.getNickName());
 			state.setString(2, member.getPhoneNumber());
 			state.setString(3, member.getBirthDay());
 			state.setString(4, member.getEmail());

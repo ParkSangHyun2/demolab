@@ -38,7 +38,7 @@ public class ClubQuery {
 
 	public void write(TravelClub club) {
 		//
-		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB(NAME,INTRO,FOUNDATION,BOARDID) VALUES(?,?,?,?)");
+		state = MariaDB.runQuery("INSERT INTO TRAVELCLUB(NAME,INTRO,FOUNDATIONDAY,BOARDID) VALUES(?,?,?,?)");
 		try {
 			state.setString(1, club.getName());
 			state.setString(2, club.getIntro());
@@ -48,7 +48,7 @@ public class ClubQuery {
 			state.close();
 		} catch (SQLException e) {
 			//
-			System.out.println(e.getMessage());
+			System.out.println("ClubQuery(WRITE) Exception -->" + e.getMessage());
 		}
 		MariaDB.closeQuery();
 	}

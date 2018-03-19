@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import step1.share.domain.entity.board.SocialBoard;
-import step4_1.dao.BoardDao;
 
 public class BoardQuery {
 	//

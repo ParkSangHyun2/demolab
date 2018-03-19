@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import step1.share.domain.entity.board.Posting;
-import step1.share.domain.entity.club.ClubMembership;
-import step1.share.domain.entity.club.CommunityMember;
-import step1.share.domain.entity.club.RoleInClub;
-import step4_1.dao.MemberDao;
-import step4_1.dao.PostingDao;
 
 public class PostingQuery {
 	//
