@@ -6,9 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
-import step1.share.domain.entity.club.RoleInClub;
+import step4_1.store.io.util.SqlCloseUtil;
 
 public class MemberQuery {
 	//
@@ -22,7 +21,6 @@ public class MemberQuery {
 			state = MariaDB.runQuery("SELECT EMAIL FROM COMMUNITYMEMBER WHERE EMAIL = ?");
 			state.setString(1, id);
 			resultSet = state.executeQuery();
-			state.close();
 
 			if (resultSet.next()) {
 				isExist = true;
@@ -31,8 +29,7 @@ public class MemberQuery {
 			//
 			System.out.println(e.getMessage());
 		}
-
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return isExist;
 	}
 
@@ -44,12 +41,11 @@ public class MemberQuery {
 			state.setString(2, member.getName());
 			state.setString(3, member.getPhoneNumber());
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public CommunityMember read(String memberId) {
@@ -61,20 +57,17 @@ public class MemberQuery {
 					"SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER WHERE EMAIL = ?");
 			state.setString(1, memberId);
 			resultSet = state.executeQuery();
-			state.close();
 			if (resultSet.next()) {
 				member = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
 						resultSet.getString("PHONENUMBER"));
 				member.setNickName(resultSet.getString("NICKNAME"));
 				member.setBirthDay(resultSet.getString("BIRTHDAY"));
-			} else {
-				return null;
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println(e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return member;
 	}
 
@@ -88,7 +81,7 @@ public class MemberQuery {
 					"SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER WHERE NAME = ?");
 			state.setString(1, name);
 			resultSet = state.executeQuery();
-			state.close();
+
 			while (resultSet.next()) {
 				communityMember = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
 						resultSet.getString("PHONENUMBER"));
@@ -100,14 +93,13 @@ public class MemberQuery {
 			//
 			System.out.println("MemberQuery Exception --> " + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return members;
 	}
 
 	public void update(CommunityMember member) {
 		//
 		try {
-			// Member자신의 정보가변할때 업데이트
 			state = MariaDB.runQuery(
 					"UPDATE COMMUNITYMEMBER SET NICKNAME = ?, PHONENUMBER = ? , BIRTHDAY = ? WHERE EMAIL = ?");
 			state.setString(1, member.getNickName());
@@ -115,12 +107,11 @@ public class MemberQuery {
 			state.setString(3, member.getBirthDay());
 			state.setString(4, member.getEmail());
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("TravelClub UPDATE Exception --->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public void delete(String memberId) {
@@ -129,12 +120,11 @@ public class MemberQuery {
 			state = MariaDB.runQuery("DELETE FROM COMMUNITYMEMBER WHERE EMAIL = ?");
 			state.setString(1, memberId);
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("Member Delete QueryException -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public List<CommunityMember> readAll() {
@@ -145,7 +135,6 @@ public class MemberQuery {
 		try {
 			state = MariaDB.runQuery("SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER ");
 			resultSet = state.executeQuery();
-
 			while (resultSet.next()) {
 				communityMember = new CommunityMember(resultSet.getString("EMAIL"), resultSet.getString("NAME"),
 						resultSet.getString("PHONENUMBER"));
@@ -153,13 +142,11 @@ public class MemberQuery {
 				communityMember.setBirthDay(resultSet.getString("BIRTHDAY"));
 				members.add(communityMember);
 			}
-			resultSet.close();
-
 		} catch (SQLException e) {
 			//
 			System.out.println("Member Query Exception --> " + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return members;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import step1.share.domain.entity.club.TravelClub;
+import step4_1.store.io.util.SqlCloseUtil;
 
 public class ClubQuery {
 	//
@@ -20,8 +21,6 @@ public class ClubQuery {
 			state = MariaDB.runQuery("SELECT USID FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(id));
 			resultSet = state.executeQuery();
-			state.close();
-
 			if (resultSet.next()) {
 				isExist = true;
 			}
@@ -30,7 +29,7 @@ public class ClubQuery {
 			System.out.println(e.getMessage());
 		}
 
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return isExist;
 	}
 
@@ -43,12 +42,11 @@ public class ClubQuery {
 			state.setString(3, club.getFoundationDay());
 			state.setString(4, club.getBoardId());
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("ClubQuery(WRITE) Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public TravelClub read(String clubId) {
@@ -59,21 +57,18 @@ public class ClubQuery {
 			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(clubId));
 			resultSet = state.executeQuery();
-			state.close();
 
 			if (resultSet.next()) {
 				club = new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
 				club.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
 				club.setBoardId(resultSet.getString("BOARDID"));
 				club.setUsid(Integer.toString(resultSet.getInt("USID")));
-			} else {
-				return null;
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println("ClubQuery Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return club;
 	}
 
@@ -85,21 +80,18 @@ public class ClubQuery {
 			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB WHERE NAME = ?");
 			state.setString(1, name);
 			resultSet = state.executeQuery();
-			state.close();
 
 			if (resultSet.next()) {
 				club = new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
 				club.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
 				club.setBoardId(resultSet.getString("BOARDID"));
 				club.setUsid(Integer.toString(resultSet.getInt("USID")));
-			} else {
-				return null;
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println("ClubQuery Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return club;
 	}
 
@@ -111,12 +103,11 @@ public class ClubQuery {
 			state.setString(2, club.getIntro());
 			state.setString(3, club.getBoardId());
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("TravelClub UPDATE Exception --->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public void delete(String clubId) {
@@ -125,12 +116,11 @@ public class ClubQuery {
 			state = MariaDB.runQuery("DELETE FROM TRAVELCLUB WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(clubId));
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("TravelClub DELETE Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 	}
 
 	public List<TravelClub> readAll() {
@@ -140,8 +130,6 @@ public class ClubQuery {
 		try {
 			state = MariaDB.runQuery("SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID FROM TRAVELCLUB ");
 			resultSet = state.executeQuery();
-			state.close();
-
 			while (resultSet.next()) {
 				TravelClub travelClub = new TravelClub(resultSet.getString("NAME"), resultSet.getString("INTRO"));
 				travelClub.setFoundationDay(resultSet.getString("FOUNDATIONDAY"));
@@ -153,7 +141,7 @@ public class ClubQuery {
 			//
 			System.out.println("TravelClub READALL Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return travelClubs;
 	}
 }

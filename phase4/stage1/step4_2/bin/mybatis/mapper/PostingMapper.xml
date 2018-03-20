@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 	"-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PostingMapper">
+	<select id="exist" parameterType="Integer" resultType="Integer">
+		SELECT USID FROM POSTING WHERE USID = #{usid}
+	</select>
+	
+	<insert id="write" parameterType="Posting">
+		INSERT INTO POSTING(TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID) 
+		VALUES(#{usid},#{writerEmail},#{contents},#{writtenDate},#{readCount},#{boardId})
+	</insert>
+	
+	<select id="read" parameterType="Integer" resultType="Posting">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID 
+		FROM POSTING
+		WHERE USID = #{usid}
+	</select>
+	
+	<select id="readByBoardId" parameterType="Integer" resultType="hashMap">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID 
+		FROM POSTING 
+		WHERE BOARDID = #{boardId}
+	</select>
+	
+	<select id="readByTitle" parameterType="String" resultType="hashMap">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID 
+		FROM POSTING 
+		WHERE TITLE = #{title}
+	</select>
+	
+	<update id="update" parameterType="Posting">
+		UPDATE POSTING 
+		SET TITLE = #{title}, CONTENTS = #{contents}, READCOUNT = #{readCount} 
+		WHERE USID = #{usid}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM POSTING 
+		WHERE USID = #{usid}
+	</delete>
+
+</mapper>
+
+
+

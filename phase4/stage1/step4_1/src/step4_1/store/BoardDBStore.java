@@ -1,10 +1,3 @@
-/*
- * COPYRIGHT (c) Nextree Consulting 2015
- * This software is the proprietary of Nextree Consulting.  
- * 
- * @author <a href="mailto:hkkang@nextree.co.kr">Kang Hyoungkoo</a>
- * @since 2015. 2. 24.
- */
 package step4_1.store;
 
 import java.util.List;
@@ -38,13 +31,21 @@ public class BoardDBStore implements BoardStore {
 	@Override
 	public SocialBoard retrieve(String boardId) {
 		// 
-		return boardQuery.read(boardId); 
+		SocialBoard socialBoard = boardQuery.read(boardId);
+		if(socialBoard.getClubId() == null) {
+			return null;
+		}
+		return socialBoard;
 	}
 	
 	@Override
 	public List<SocialBoard> retrieveByName(String name) {
 		//
-		return boardQuery.readByName(name); 
+		List<SocialBoard> socialBoards = boardQuery.readByName(name);
+		if(socialBoards.isEmpty()) {
+			return null;
+		}
+		return socialBoards;
 	}
 
 	@Override
@@ -53,9 +54,6 @@ public class BoardDBStore implements BoardStore {
 		if (!boardQuery.exists(board.getId())) {
 			throw new NoSuchElementException("No such a element: " + board.getId()); 
 		}
-		
-		//boardQuery.update(board);
-		//unused
 	}
 
 	@Override

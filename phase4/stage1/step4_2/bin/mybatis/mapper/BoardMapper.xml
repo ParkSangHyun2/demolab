@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+
+	<select id="exists" parameterType="String" resultType="int">
+		SELECT CLUBID 
+		FROM SOCIALBOARD 
+		WHERE CLUBID = #{clubId}
+	</select>
+	
+	<insert id="write" parameterType="SocialBoard">
+		INSERT INTO SOCIALBOARD(NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID) 
+		VALUES(#{name}, #{adminEmail}, #{createDate}, #{sequence}, #{clubId})
+	</insert>
+	
+	<select id="read" parameterType="String" resultType="SocialBoard">
+		SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID 
+		FROM SOCIALBOARD 
+		WHERE CLUBID = #{clubId}
+	</select>
+	
+	<select id="readByName" parameterType="String" resultType="Hashmap">
+		SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID 
+		FROM SOCIALBOARD 
+		WHERE NAME = #{name}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM SOCIALBOARD 
+		WHERE CLUBID= #{clubId}
+	</delete>
+	
+</mapper>

@@ -29,14 +29,7 @@ public class MariaDB {
 	}
 	
 	public static Connection getConnection() {
-		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DATABASE_NAME, USER_NAME, PASSWORD);
-			return connection;
-		} catch (SQLException e) {
-			//
-			System.out.println("Maria_db getConnection Exception ---> " + e.getMessage());
-		}
-		return null;
+		return connection;
 	}
 	
 	public static void closeQuery() {

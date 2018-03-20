@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import step1.share.domain.entity.board.Posting;
+import step4_1.store.io.util.SqlCloseUtil;
 
 public class PostingQuery {
 	//
@@ -16,12 +17,11 @@ public class PostingQuery {
 	public boolean exists(String id) {
 		//
 		boolean isExist = false;
+		
 		try {
 			state = MariaDB.runQuery("SELECT USID FROM POSTING WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(id));
-			resultSet = state.executeQuery();
-			state.close();
-			
+			resultSet = state.executeQuery();	
 			if(resultSet.next()) {
 				isExist = true;
 			}
@@ -29,8 +29,7 @@ public class PostingQuery {
 			//
 			System.out.println("Posting Query(EXIST) Exception --> " + e.getMessage());
 		}
-		
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return isExist;
 	}
 
@@ -45,12 +44,11 @@ public class PostingQuery {
 			state.setInt(5, posting.getReadCount());
 			state.setInt(6, Integer.parseInt(posting.getBoardId()));
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			//
 			System.out.println("POSTING QUERY EXCEPTION --> " + e.getErrorCode() + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public Posting read(String postingId) {
@@ -59,9 +57,7 @@ public class PostingQuery {
 		try {
 			state = MariaDB.runQuery("SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID FROM POSTING WHERE USID = ?");
 			state.setInt(1, Integer.parseInt(postingId));
-			resultSet = state.executeQuery();
-			state.close();
-			
+			resultSet = state.executeQuery();		
 			if (resultSet.next()) {
 				posting = new Posting();
 				posting.setUsid(resultSet.getString("USID"));
@@ -71,14 +67,12 @@ public class PostingQuery {
 				posting.setWrittenDate(resultSet.getString("WRITTENDATE"));
 				posting.setReadCount(resultSet.getInt("READCOUNT"));
 				posting.setBoardId(resultSet.getString("BOARDID"));
-			} else {
-				return null;
 			}
 		} catch (SQLException e) {
 			//
 			System.out.println("Posting Query(READ) Exception --> " + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return posting;
 	}
 
@@ -91,8 +85,6 @@ public class PostingQuery {
 			state = MariaDB.runQuery("SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID FROM POSTING WHERE BOARDID = ?");
 			state.setInt(1, Integer.parseInt(boardId));
 			resultSet = state.executeQuery();
-			state.close();
-			
 			while (resultSet.next()) {
 				posting = new Posting();
 				posting.setUsid(Integer.toString(resultSet.getInt("usid")));
@@ -108,7 +100,7 @@ public class PostingQuery {
 			//
 			System.out.println("Posting Query(readByBoardId) Exception :" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return postings;
 	}
 
@@ -121,8 +113,6 @@ public class PostingQuery {
 			state = MariaDB.runQuery("SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID FROM POSTING WHERE TITLE = ?");
 			state.setString(1, title);
 			resultSet = state.executeQuery();
-			state.close();
-			
 			while (resultSet.next()) {
 				posting = new Posting();
 				posting.setUsid(resultSet.getString("usid"));
@@ -138,7 +128,7 @@ public class PostingQuery {
 			//
 			System.out.println("Posting Query(readByName) Exception :"+e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return postings;
 	}
 
@@ -151,12 +141,12 @@ public class PostingQuery {
 			state.setString(2, posting.getContents());
 			state.setInt(3, posting.getReadCount());
 			state.setInt(4, Integer.parseInt(posting.getUsid()));
-			
 			state.executeUpdate();
 		} catch (SQLException e) {
 			//
 			System.out.println("POSTING UPDATE QUERY EXCEPTION -->" + e.getErrorCode()+e.getMessage());
 		}
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public void delete(String postingId) {
@@ -165,10 +155,10 @@ public class PostingQuery {
 			state = MariaDB.runQuery("DELETE FROM POSTING WHERE USID = ?");
 			state.setString(1, postingId);
 			state.executeUpdate();
-			state.close();
 		} catch (SQLException e) {
 			System.out.println("POSTING DELETE QUERY EXCEPTION -->" + e.getErrorCode()+e.getMessage());
 		}
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 }

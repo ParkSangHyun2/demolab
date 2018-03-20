@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClubStore">
+
+	<select id="exists" parameterType="String" resultType="int">
+		ELECT USID 
+		FROM TRAVELCLUB 
+		WHERE USID = #{usid}
+	</select>
+
+	<insert id="write" parameterType="TravelClub">
+		INSERT INTO TRAVELCLUB(NAME,INTRO,FOUNDATIONDAY,BOARDID) 
+		VALUES(#{name}, #{intro}, #{foundationDay}, #{boardId})
+	</insert>
+	
+	<select id="read" parameterType="String" resultType="TravelClub">
+		SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID 
+		FROM TRAVELCLUB 
+		WHERE USID = #{usid}
+	</select>
+	
+	<select id="readByName" parameterType="String" resultType="TravelClub">
+		SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID 
+		FROM TRAVELCLUB 
+		WHERE NAME = #{name}
+	</select>
+	
+	<update id="update" parameterType="TravelClub">
+		UPDATE TRAVELCLUB 
+		SET NAME = #{name}, INTRO = #{intro}, BOARDID = #{boardId}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM TRAVELCLUB 
+		WHERE USID = #{usid}
+	</delete>
+	
+	<select id="readAll" resultType="HashMap">
+		SELECT NAME, INTRO, FOUNDATIONDAY, BOARDID, USID 
+		FROM TRAVELCLUB
+	</select>
+	
+</mapper>

@@ -10,6 +10,7 @@ import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
 import step1.share.domain.entity.club.RoleInClub;
 import step1.share.domain.entity.club.TravelClub;
+import step4_1.store.io.util.SqlCloseUtil;
 
 public class MembershipQuery {
 	//
@@ -25,8 +26,6 @@ public class MembershipQuery {
 					"SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE CLUBID = ?");
 			state.setInt(1, Integer.parseInt(clubId));
 			resultSet = state.executeQuery();
-			state.close();
-
 			while (resultSet.next()) {
 				ClubMembership membership = new ClubMembership(resultSet.getString("CLUBID"),
 						resultSet.getString("MEMBEREMAIL"));
@@ -39,8 +38,7 @@ public class MembershipQuery {
 			//
 			System.out.println("Membership query(readByClubId) Exception --> " + e.getMessage());
 		}
-		MariaDB.closeQuery();
-
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return memberships;
 	}
 
@@ -54,7 +52,6 @@ public class MembershipQuery {
 					"SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBERNAME = ?");
 			state.setString(1, memberName);
 			resultSet = state.executeQuery();
-
 			while (resultSet.next()) {
 				membership = new ClubMembership(resultSet.getString("CLUBID"), resultSet.getString("MEMBEREMAIL"));
 				membership.setMemberName(resultSet.getString("MEMBERNAME"));
@@ -65,9 +62,7 @@ public class MembershipQuery {
 		} catch (SQLException e) {
 			System.out.println("Membership Query(readByMemberName) Exception -->" + e.getMessage());
 		}
-
-		MariaDB.closeQuery();
-
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return membershipList;
 	}
 
@@ -81,8 +76,6 @@ public class MembershipQuery {
 					"SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE FROM CLUBMEMBERSHIP WHERE MEMBEREMAIL = ?");
 			state.setString(1, memberEmail);
 			resultSet = state.executeQuery();
-			state.close();
-
 			while (resultSet.next()) {
 				membership = new ClubMembership(resultSet.getString("CLUBID"), resultSet.getString("MEMBEREMAIL"));
 				membership.setMemberName(resultSet.getString("MEMBERNAME"));
@@ -94,8 +87,7 @@ public class MembershipQuery {
 			//
 			System.out.println("Membership query(readByMemberEmail) Exception --> " + e.getMessage());
 		}
-		MariaDB.closeQuery();
-
+		SqlCloseUtil.closeSql(state, resultSet, MariaDB.getConnection());
 		return memberships;
 	}
 
@@ -114,7 +106,6 @@ public class MembershipQuery {
 					state.setString(4, membership.getRole().toString());
 					state.setString(5, membership.getJoinDate());
 					state.executeUpdate();
-					state.close();
 				}
 			} else {
 				return false;
@@ -122,16 +113,15 @@ public class MembershipQuery {
 		} catch (SQLException e) {
 			//
 			System.out.println("Membership Query(createMembershipForCLub) Exception -->" + e.getMessage());
-
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 		return true;
 	}
 
 	public boolean createMembershipForMember(CommunityMember member) {
 		//
 		List<ClubMembership> membershipList = this.readByMemberEmail(member.getEmail());
-		
+
 		try {
 			if (membershipList.isEmpty()) {
 				for (ClubMembership membership : member.getMembershipList()) {
@@ -143,7 +133,6 @@ public class MembershipQuery {
 					state.setString(4, membership.getRole().toString());
 					state.setString(5, membership.getJoinDate());
 					state.executeUpdate();
-					state.close();
 				}
 			} else {
 				return false;
@@ -152,7 +141,7 @@ public class MembershipQuery {
 			//
 			System.out.println("Membership Query(createMembership) Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 		return true;
 	}
 
@@ -167,26 +156,24 @@ public class MembershipQuery {
 				for (ClubMembership membership : club.getMembershipList()) {
 					if ((membership.getMemberEmail().equals(membershipInDb.getMemberEmail())
 							&& membership.getClubId().equals(membership.getClubId())))
-					isExist = true;
+						isExist = true;
 				}
 				if (!isExist) {
 					state = MariaDB.runQuery("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
 					state.setInt(1, Integer.parseInt(membershipInDb.getClubId()));
 					state.setString(2, membershipInDb.getMemberEmail());
 					state.executeUpdate();
-					state.close();
 				}
 			}
 		} catch (SQLException e) {
 			System.out.println("Membership Query(checkDeletedMembership) Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public void checkDeletedMembershipForMember(CommunityMember member) {
 		//
 		List<ClubMembership> membershipList = this.readByMemberEmail(member.getEmail());
-
 		boolean isExist = false;
 
 		try {
@@ -195,35 +182,33 @@ public class MembershipQuery {
 				for (ClubMembership membership : member.getMembershipList()) {
 					if ((membership.getMemberEmail().equals(membershipInDb.getMemberEmail())
 							&& membership.getClubId().equals(membership.getClubId())))
-					isExist = true;
+						isExist = true;
 				}
 				if (!isExist) {
 					state = MariaDB.runQuery("DELETE FROM CLUBMEMBERSHIP WHERE CLUBID = ? AND MEMBEREMAIL=?");
 					state.setInt(1, Integer.parseInt(membershipInDb.getClubId()));
 					state.setString(2, membershipInDb.getMemberEmail());
 					state.executeUpdate();
-					state.close();
 				}
-				
 			}
 		} catch (SQLException e) {
 			System.out.println("Membership Query(checkDeletedMembership) Exception -->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	public void checkCreatedMembershipForClub(TravelClub club) {
 		//
 		List<ClubMembership> membershipList = this.readByClubId(club.getId());
 		boolean isExist = false;
-		
+
 		try {
 			for (ClubMembership membership : club.getMembershipList()) {
 				isExist = false;
 				for (ClubMembership membershipInDb : membershipList) {
 					if ((membership.getMemberEmail().equals(membershipInDb.getMemberEmail())
 							&& membership.getClubId().equals(membership.getClubId())))
-					isExist = true;
+						isExist = true;
 				}
 				if (!isExist) {
 					state = MariaDB.runQuery(
@@ -235,7 +220,6 @@ public class MembershipQuery {
 					state.setString(5, membership.getJoinDate());
 					state.executeUpdate();
 				}
-
 			}
 		} catch (SQLException e) {
 			//
@@ -247,7 +231,6 @@ public class MembershipQuery {
 	public void checkCreatedMembershipForMember(CommunityMember member) {
 		//
 		List<ClubMembership> membershipList = this.readByMemberEmail(member.getEmail());
-
 		boolean isExist = false;
 
 		try {
@@ -256,7 +239,7 @@ public class MembershipQuery {
 				for (ClubMembership membershipInDb : membershipList) {
 					if ((membership.getMemberEmail().equals(membershipInDb.getMemberEmail())
 							&& membership.getClubId().equals(membership.getClubId())))
-					isExist = true;
+						isExist = true;
 				}
 				if (!isExist) {
 					state = MariaDB.runQuery(
@@ -268,24 +251,23 @@ public class MembershipQuery {
 					state.setString(5, membership.getJoinDate());
 					state.executeUpdate();
 				}
-
 			}
 
 		} catch (SQLException e) {
 			//
 			System.out.println("Membership Query(checkCreatedMembership) Exception --->" + e.getMessage());
 		}
-		MariaDB.closeQuery();
+		SqlCloseUtil.closeSql(state, MariaDB.getConnection());
 	}
 
 	private RoleInClub valueOfRole(String role) {
 		//
 		RoleInClub roleInClub = null;
 		switch (role) {
-		case "MEMBER":
+		case "Member":
 			roleInClub = RoleInClub.Member;
 			break;
-		case "PRESIDENT":
+		case "President":
 			roleInClub = RoleInClub.President;
 			break;
 		}
