@@ -1,4 +1,4 @@
-package step4_2.provider;
+package step4_2.mybatis.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +11,14 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import step1.share.domain.entity.board.Posting;
 
-public class PostingMybatisProvider {
+public class PostingProviderImpl {
 	//
 	private SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 	private final String resource = "./mybatis/MybatisConfig.xml";
 	private InputStream inputStream;
 	private SqlSessionFactory factory;
 	
-	public PostingMybatisProvider() {
+	public PostingProviderImpl() {
 		try {
 			inputStream = Resources.getResourceAsStream(resource);
 			factory = builder.build(inputStream);
@@ -82,7 +82,7 @@ public class PostingMybatisProvider {
 	
 	public static void main(String[] args) {
 		//
-		PostingMybatisProvider pro = new PostingMybatisProvider();
+		PostingProviderImpl pro = new PostingProviderImpl();
 		if(pro.exists("5")) {
 			System.out.println("RUN");
 		}else {

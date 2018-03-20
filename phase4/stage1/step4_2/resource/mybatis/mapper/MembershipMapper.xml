@@ -1,3 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="MembershipMapper"></mapper>
+<mapper namespace="MembershipMapper">
+
+	<select id="readByClubId" parameterType="String" resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE 
+		FROM CLUBMEMBERSHIP 
+		WHERE CLUBID = #{clubId}
+	</select>
+	
+	<select id="readByMemberName" parameterType="String" resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE 
+		FROM CLUBMEMBERSHIP 
+		WHERE MEMBERNAME = #{memberName}
+	</select>
+	
+	<select id="readByMemberEmail" parameterType="String" resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE 
+		FROM CLUBMEMBERSHIP 
+		WHERE MEMBEREMAIL = #{memberEmail}
+	</select>
+	
+	<insert id="createMembershipForClub" parameterType="TravelClub">
+		INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE) 
+		VALUES(#{clubId}, #{memberEmail}, #{memberName}, #{role}, #{joinDate})
+	</insert>
+	
+	<insert id="createMembershipForMember" parameterType="CommunityMember">
+		INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE) 
+		VALUES(#{clubId}, #{memberEmail}, #{memberName}, #{role}, #{joinDate})
+	</insert>
+	
+	<delete id="checkDeletedMembershipForClub" parameterType="TravelClub">
+		DELETE FROM CLUBMEMBERSHIP 
+		WHERE CLUBID = #{clubId} AND MEMBEREMAIL=#{memberEmail}
+	</delete>
+	
+	<delete id="checkDeletedMembershipForMember" parameterType="CommunityMember">
+		DELETE FROM CLUBMEMBERSHIP 
+		WHERE CLUBID = #{clubId} AND MEMBEREMAIL=#{memberEmail}
+	</delete>
+	
+	<insert id="checkCreatedMembershipForClub" parameterType="TravelClub">
+		INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBERMAIL, MEMBERNAME, ROLE, JOINDATE)
+		VALUES(#{clubId}, #{memberEmail}, #{memberName}, #{role}, #{joinDate})
+	</insert>
+	
+	<insert id="checkCreatedMembershipForMember" parameterType="CommunityMember">
+		INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBERMAIL, MEMBERNAME, ROLE, JOINDATE) 
+		VALUES(#{clubId}, #{memberEmail}, #{memberName}, #{role}, #{joinDate})
+	</insert>
+
+</mapper>
