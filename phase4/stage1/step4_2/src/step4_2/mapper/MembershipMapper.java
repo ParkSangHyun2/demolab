@@ -14,15 +14,9 @@ public interface MembershipMapper {
 	
 	List<ClubMembership> readByMemberEmail(String memberEmail);
 	
-	void createMembershipForClub(TravelClub club);
+	void createMembership(ClubMembership membership);
 	
-	void createMembershipForMember(CommunityMember member);
+	void checkDeletedMembership(String clubId, String memberEmail);
 	
-	void checkDeletedMembershipForClub(TravelClub club);
-	
-	void checkDeletedMembershipForMember(CommunityMember member);
-	
-	void checkCreatedMembershipForClub(TravelClub club);
-	
-	void checkCreatedMemberhsipForMember(CommunityMember member);
+	void checkCreatedMembership(ClubMembership membership);
 }

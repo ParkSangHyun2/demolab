@@ -6,17 +6,17 @@ import step1.share.domain.entity.board.Posting;
 
 public interface PostingMapper {
 	//
-	int exist(int usid);
+	int exists(String usid);
 	
 	void write(Posting posting);
 	
-	Posting read(int usid);
+	Posting read(String usid);
 	
-	List<Posting> readByBoardId(int boardId);
+	List<Posting> readByBoardId(String boardId);
 	
 	List<Posting> readByTitle(String title);
 	
 	void update(Posting posting);
 	
-	void delete(int usid);
+	void delete(String usid);
 }

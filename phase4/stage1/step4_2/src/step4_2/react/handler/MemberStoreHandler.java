@@ -3,14 +3,14 @@ package step4_2.react.handler;
 import com.google.gson.Gson;
 
 import step1.share.domain.entity.club.CommunityMember;
-import step1.share.service.store.MemberStore;
 import step1.share.util.RequestMessage;
 import step1.share.util.ResponseMessage;
-import step4_1.store.DBStoreLycler;
+import step4_2.mybatis.impl.ProviderImplLycler;
+import step4_2.mybatis.provider.MemberProvider;
 
 public class MemberStoreHandler<V> implements StoreHandler {
 	//
-	MemberStore memberStore = DBStoreLycler.shareInstance().requestMemberStore();
+	MemberProvider memberStore = ProviderImplLycler.shareInstance().requestMemberProvider();
 	
 	@SuppressWarnings("unchecked")
 	@Override

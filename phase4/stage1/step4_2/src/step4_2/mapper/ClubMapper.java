@@ -6,17 +6,17 @@ import step1.share.domain.entity.club.TravelClub;
 
 public interface ClubMapper {
 	//
-	int exist(int usid);
+	int exists(String usid);
 
 	void write(TravelClub club);
 
-	TravelClub read(int usid);
+	TravelClub read(String usid);
 
 	TravelClub readByName(String clubName);
 
 	void update(TravelClub club);
 	
-	void delete(int usid);
+	void delete(String usid);
 	
 	List<TravelClub> readAll();
 }

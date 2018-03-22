@@ -3,14 +3,14 @@ package step4_2.react.handler;
 import com.google.gson.Gson;
 
 import step1.share.domain.entity.board.SocialBoard;
-import step1.share.service.store.BoardStore;
 import step1.share.util.RequestMessage;
 import step1.share.util.ResponseMessage;
-import step4_1.store.DBStoreLycler;
+import step4_2.mybatis.impl.ProviderImplLycler;
+import step4_2.mybatis.provider.BoardProvider;
 
 public class BoardStoreHandler<V> implements StoreHandler {
 	//
-	BoardStore boardStore = DBStoreLycler.shareInstance().requestBoardStore();
+	BoardProvider boardStore = ProviderImplLycler.shareInstance().requestBoardProvider();
 	
 	@SuppressWarnings("unchecked")
 	@Override

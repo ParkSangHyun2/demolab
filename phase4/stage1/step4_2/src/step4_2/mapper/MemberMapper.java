@@ -6,7 +6,7 @@ import step1.share.domain.entity.club.CommunityMember;
 
 public interface MemberMapper {
 	//
-	int exist(int usid);
+	String exists(String usid);
 	
 	void write(CommunityMember member);
 	

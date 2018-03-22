@@ -10,6 +10,8 @@ public class ClubMembership {
 	private RoleInClub role; 
 	private String joinDate; 
 	
+	public ClubMembership() {}
+	
 	public ClubMembership(TravelClub club, CommunityMember member) {
 		// 
 		this.clubId = club.getUsid(); 

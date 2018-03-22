@@ -1,104 +1,130 @@
 package step4_2.mybatis.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import step1.share.domain.entity.board.Posting;
+import step4_2.mapper.PostingMapper;
+import step4_2.mybatis.Mybatis;
+import step4_2.mybatis.provider.PostingProvider;
 
-public class PostingProviderImpl {
+public class PostingProviderImpl implements PostingProvider {
 	//
-	private SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-	private final String resource = "./mybatis/MybatisConfig.xml";
-	private InputStream inputStream;
-	private SqlSessionFactory factory;
-	
-	public PostingProviderImpl() {
-		try {
-			inputStream = Resources.getResourceAsStream(resource);
-			factory = builder.build(inputStream);
-		} catch (IOException e) {
-			//
-			System.out.println("Posting Provider Exception --> " + e.getMessage());
-		}
-	}
-	
+	private SqlSession session;
+
 	public boolean exists(String usid) {
 		//
-		boolean isExist = false;
-		
-		SqlSession session = factory.openSession();
-		int postingUsid = session.selectOne("PostingMapper.exist",Integer.parseInt(usid));
-		if(postingUsid != -1) {
-			System.out.println(postingUsid);
-			isExist = true;
+		int postingUsid = -1;
+
+		try {
+			session = Mybatis.openSession();
+			postingUsid = session.getMapper(PostingMapper.class).exists(usid);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
 		}
-		return isExist;
+		if (postingUsid != -1) {
+			return true;
+		}
+		return false;
 	}
-	
-	public void write(Posting posting) {
+
+	public String create(Posting posting) {
 		//
-		SqlSession session = factory.openSession();
-		session.insert("PostingMapper.write", posting);
+		try {
+			session = Mybatis.openSession();
+			session.getMapper(PostingMapper.class).write(posting);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
+		return posting.getId();
 	}
-	
-	public Posting read(String usid) {
+
+	public Posting retrieve(String usid) {
 		//
-		SqlSession session = factory.openSession();
-		Posting posting = session.selectOne("PostingMapper.read", Integer.parseInt(usid));
+		Posting posting;
+
+		try {
+			session = Mybatis.openSession();
+			posting = session.getMapper(PostingMapper.class).read(usid);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
 		return posting;
 	}
-	
-	public List<Posting> readByBoardId(String boardId){
+
+	public List<Posting> retrieveByBoardId(String boardId) {
 		//
-		SqlSession session = factory.openSession();
-		List<Posting> postings = session.selectList("PostingMapper.readByBoardId", Integer.parseInt(boardId));
+		List<Posting> postings = new ArrayList<>();
+
+		try {
+			session = Mybatis.openSession();
+			postings = session.getMapper(PostingMapper.class).readByBoardId(boardId);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
 		return postings;
 	}
-	
-	public List<Posting> readByTitle(String title){
+
+	public List<Posting> retrieveByTitle(String title) {
 		//
-		SqlSession session = factory.openSession();
-		List<Posting> postings = session.selectList("PostingMapper.readByTitle", title);
+		List<Posting> postings = new ArrayList<>();
+
+		try {
+			session = Mybatis.openSession();
+			postings = session.getMapper(PostingMapper.class).readByTitle(title);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
 		return postings;
 	}
-	
+
 	public void update(Posting posting) {
 		//
-		SqlSession session = factory.openSession();
-		System.out.println("-->" + session.update("PostingMapper.update", posting));
+		try {
+			session = Mybatis.openSession();
+			session.getMapper(PostingMapper.class).update(posting);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
 	}
-	
+
 	public void delete(String usid) {
 		//
-		SqlSession session = factory.openSession();
-		session.delete("PostingMapper.delete", Integer.parseInt(usid));
+		try {
+			session = Mybatis.openSession();
+			session.getMapper(PostingMapper.class).delete(usid);
+			session.commit();
+		} finally {
+			Mybatis.closeSession(session);
+		}
 	}
-	
+
 	public static void main(String[] args) {
 		//
 		PostingProviderImpl pro = new PostingProviderImpl();
-		if(pro.exists("5")) {
+		if (pro.exists("5")) {
 			System.out.println("RUN");
-		}else {
+		} else {
 			System.out.println("Fail");
 		}
-		
-		System.out.println(pro.read("5"));
-		System.out.println(pro.readByBoardId("30"));
-		System.out.println(pro.readByTitle("11"));
+
+		System.out.println(pro.retrieve("5"));
+		System.out.println(pro.retrieveByBoardId("30"));
+		System.out.println(pro.retrieveByTitle("11"));
 		Posting posting = new Posting();
-		posting = pro.read("5");
+		posting = pro.retrieve("5");
 		posting.setTitle("TItle");
 		posting.setContents("is Changed");
 		posting.setReadCount(1133);
 		pro.update(posting);
-		
+
 	}
 }
-

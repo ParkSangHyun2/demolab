@@ -8,21 +8,18 @@ import step1.share.domain.entity.club.ClubMembership;
 import step1.share.domain.entity.club.CommunityMember;
 import step1.share.service.store.MemberStore;
 import step1.share.util.MemberDuplicationException;
-import step4_1.store.io.ClubQuery;
 import step4_1.store.io.MemberQuery;
 import step4_1.store.io.MembershipQuery;
 
 public class MemberDBStore implements MemberStore {
 	//
 	private MemberQuery memberQuery; 
-	private ClubQuery clubQuery;
 	private MembershipQuery membershipQuery;
 	
 	public MemberDBStore() {
 		//  
 		this.memberQuery = new MemberQuery(); 
 		this.membershipQuery = new MembershipQuery();
-		this.clubQuery = new ClubQuery();
 	}
 	
 	@Override
