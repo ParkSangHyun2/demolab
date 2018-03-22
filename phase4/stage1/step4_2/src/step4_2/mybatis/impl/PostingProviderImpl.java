@@ -106,25 +106,4 @@ public class PostingProviderImpl implements PostingProvider {
 			Mybatis.closeSession(session);
 		}
 	}
-
-	public static void main(String[] args) {
-		//
-		PostingProviderImpl pro = new PostingProviderImpl();
-		if (pro.exists("5")) {
-			System.out.println("RUN");
-		} else {
-			System.out.println("Fail");
-		}
-
-		System.out.println(pro.retrieve("5"));
-		System.out.println(pro.retrieveByBoardId("30"));
-		System.out.println(pro.retrieveByTitle("11"));
-		Posting posting = new Posting();
-		posting = pro.retrieve("5");
-		posting.setTitle("TItle");
-		posting.setContents("is Changed");
-		posting.setReadCount(1133);
-		pro.update(posting);
-
-	}
 }

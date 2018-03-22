@@ -27,9 +27,9 @@
 		VALUES(#{clubId, typeHandler = IdTypehandler}, #{memberEmail}, #{memberName}, #{role, typeHandler = EnumTypehandler}, #{joinDate})
 	</insert>
 
-	<delete id="checkDeletedMembership" parameterType="String">
+	<delete id="checkDeletedMembership" parameterType="map">
 		DELETE FROM CLUBMEMBERSHIP
-		WHERE CLUBID = #{clubId, typeHandler = IdTypehandler} AND MEMBEREMAIL=#{memberEmail}
+		WHERE CLUBID = #{param1, typeHandler = IdTypehandler} AND MEMBEREMAIL=#{param2}
 	</delete>
 
 	<insert id="checkCreatedMembership" parameterType="ClubMembership">

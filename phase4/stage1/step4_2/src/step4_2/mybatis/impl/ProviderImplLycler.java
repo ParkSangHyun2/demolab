@@ -20,7 +20,6 @@ public class ProviderImplLycler implements ProviderLycler {
 		if(lycler == null) {
 			lycler = new ProviderImplLycler();
 		}
-		
 		return lycler;
 	}
 
