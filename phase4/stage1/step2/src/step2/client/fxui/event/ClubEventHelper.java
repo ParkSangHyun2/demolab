@@ -27,10 +27,12 @@ public class ClubEventHelper {
 		//
 		TravelClubDto clubDto = new TravelClubDto(clubName, clubIntroduce);
 		clubDto.setUsid("0");
+
 		clubService.registerClub(clubDto);
 		TravelClubDto travelClub = clubService.findClubByName(clubName);
 		ClubMembershipDto clubMembershipDto = new ClubMembershipDto(travelClub.getUsid(), Session.loggedInMemberEmail);
 		clubMembershipDto.setRole(RoleInClub.President);
+
 		clubService.addMembership(clubMembershipDto);
 		boardService.register(new BoardDto(travelClub.getUsid(),travelClub.getName(), Session.loggedInMemberEmail));
 		

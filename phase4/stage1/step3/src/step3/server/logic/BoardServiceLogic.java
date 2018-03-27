@@ -51,7 +51,6 @@ public class BoardServiceLogic implements BoardService {
 		}
 		
 		SocialBoard board = boardDto.toBoard();
-		
 		return boardStore.create(board);
 	}
 

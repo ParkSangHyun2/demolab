@@ -8,12 +8,14 @@
 
 package step1.share.domain.entity.board;
 
+import java.io.Serializable;
+
 import step1.share.domain.entity.Entity;
 import step1.share.domain.entity.club.CommunityMember;
 import step1.share.domain.entity.club.TravelClub;
 import step1.share.domain.entity.util.DateUtil;
 
-public class SocialBoard implements Entity {
+public class SocialBoard implements Entity,Serializable {
     //
     private String clubId;		
     private int sequence; 

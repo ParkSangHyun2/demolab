@@ -1,8 +1,10 @@
 package step1.share.domain.entity.club;
 
+import java.io.Serializable;
+
 import step1.share.domain.entity.util.DateUtil;
 
-public class ClubMembership {
+public class ClubMembership implements Serializable{
 	//
 	private String clubId; 
 	private String memberEmail; 
@@ -17,7 +19,6 @@ public class ClubMembership {
 		this.clubId = club.getUsid(); 
 		this.memberEmail = member.getEmail(); 
 		this.memberName = member.getName();
-		
 		this.role = RoleInClub.Member; 
 		this.joinDate = DateUtil.today(); 
 	}
@@ -26,7 +27,6 @@ public class ClubMembership {
 		//
 		this.clubId = clubId; 
 		this.memberEmail = memberEmail;
-		
 		this.role = RoleInClub.Member; 
 		this.joinDate = DateUtil.today(); 
 	}
@@ -83,6 +83,14 @@ public class ClubMembership {
 
 	public void setMemberName(String memberName) {
 		this.memberName = memberName;
+	}
+	
+	public void setMemberEmail(String memberEmail) {
+		this.memberEmail = memberEmail;
+	}
+	
+	public void setClubId(String clubId) {
+		this.clubId = clubId;
 	}
 	
 	public static void main(String[] args) {
