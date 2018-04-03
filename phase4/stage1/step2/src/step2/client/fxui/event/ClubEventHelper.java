@@ -44,10 +44,7 @@ public class ClubEventHelper {
 		String clubId = next.getUsid();
 		String memberId = Session.loggedInMemberEmail;
 		for(ClubMembershipDto membership : next.getMembershipList() ) {
-			System.out.println(next);
-			System.out.println(next.getMembershipList());
 			if (membership.getMemberEmail().equals(memberId) && membership.getRole().toString().equals("President")) {
-				System.out.println("in");
 				clubService.remove(clubId);
 				return;
 			}

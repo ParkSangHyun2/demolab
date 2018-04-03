@@ -35,7 +35,7 @@ public class MemberProviderImpl implements MemberProvider {
 	@Override
 	public CommunityMember retrieve(String memberEmail) {
 		//
-		CommunityMember member;
+		CommunityMember member = null;
 		List<ClubMembership> memberships = new ArrayList<>();
 
 		try {
@@ -44,7 +44,9 @@ public class MemberProviderImpl implements MemberProvider {
 			memberships = session.getMapper(MembershipMapper.class).readByMemberEmail(memberEmail);
 			member.getMembershipList().addAll(memberships);
 			session.commit();
-		} finally {
+		} catch(Exception e){
+			return member;
+		}finally {
 			Mybatis.closeSession(session);
 		}
 		return member;
