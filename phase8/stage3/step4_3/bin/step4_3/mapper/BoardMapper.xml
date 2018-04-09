@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+      "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="step1.share.domain.entity.board">
+
+	<class name="Posting" table="Posting">
+		<id name="usid" column="usid"/>
+		<property name="title" column="title"/>
+		<property name="writerEmail" column="writerEmail"/>
+		<property name="contents" column="contents" />
+		<property name="writtenDate" column="writtenDate" />
+		<property name="readCount" column="readCount" />
+		<property name="boardId" column="boardId"/>
+	</class>
+
+	<class name="SocialBoard" table="SocialBoard">
+		<id name="clubId" column="clubId"/>
+		<property name="name" column="name" />
+		<property name="adminEmail" column="adminEmail" />
+		<property name="createDate" column="createDate" />
+	</class>
+
+</hibernate-mapping>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 	"-//mybatis.org//DTD Mapper 3.0//EN"
+						"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="step4_2.mapper.PostingMapper">
+	<select id="exists" parameterType="String" resultType="Integer">
+		SELECT USID FROM POSTING WHERE USID = #{usid, typeHandler=IdTypehandler}
+	</select>
+	
+	<insert id="write" parameterType="Posting">
+		INSERT INTO POSTING(TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID) 
+		VALUES(#{title},#{writerEmail},#{contents},#{writtenDate},#{readCount},#{boardId})
+	</insert>
+	
+	<select id="read" parameterType="String" resultMap="CustomPosting">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID 
+		FROM POSTING
+		WHERE USID = #{usid, typeHandler=IdTypehandler}
+	</select>
+	
+	<select id="readByBoardId" parameterType="String" resultMap="CustomPosting" resultType="hashMap">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID, USID 
+		FROM POSTING 
+		WHERE BOARDID = #{boardId, typeHandler=IdTypehandler}
+	</select>
+	
+	<select id="readByTitle" parameterType="String" resultMap="CustomPosting" resultType="hashMap">
+		SELECT TITLE, WRITEREMAIL, CONTENTS, WRITTENDATE, READCOUNT, BOARDID 
+		FROM POSTING 
+		WHERE TITLE = #{title}
+	</select>
+	
+	<update id="update" parameterType="Posting">
+		UPDATE POSTING 
+		SET TITLE = #{title}, CONTENTS = #{contents}, READCOUNT = #{readCount} 
+		WHERE USID = #{usid, typeHandler=IdTypehandler}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM POSTING 
+		WHERE USID = #{usid, typeHandler=IdTypehandler}
+	</delete>
+	
+	<resultMap type="Posting" id="CustomPosting">
+		<id column="usid" property="usid" typeHandler="IdTypehandler"/>
+		<result column="title" property="title"/>
+		<result column="writerEmail" property="writerEmail"/>
+		<result column="contents" property="contents"/>
+		<result column="writtenDate" property="writtenDate"/>
+		<result column="readCount" property="readCount"/>
+		<result column="boardId" property="boardId" typeHandler="IdTypehandler"/>
+	</resultMap>
+
+</mapper>

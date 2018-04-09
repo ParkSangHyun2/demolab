@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="step4_2.mapper.MembershipMapper">
+
+	<select id="readByClubId" parameterType="String" resultMap="CustomMembership" resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE
+		FROM CLUBMEMBERSHIP
+		WHERE CLUBID = #{clubId, typeHandler = IdTypehandler}
+	</select>
+
+	<select id="readByMemberName" parameterType="String" resultMap="CustomMembership" resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE
+		FROM CLUBMEMBERSHIP
+		WHERE MEMBERNAME = #{memberName}
+	</select>
+
+	<select id="readByMemberEmail" parameterType="String" resultMap="CustomMembership" 
+		resultType="Hashmap">
+		SELECT CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE
+		FROM CLUBMEMBERSHIP
+		WHERE MEMBEREMAIL = #{memberEmail}
+	</select>
+
+	<insert id="createMembership" parameterType="ClubMembership">
+		INSERT INTO
+		CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE)
+		VALUES(#{clubId, typeHandler = IdTypehandler}, #{memberEmail}, #{memberName}, #{role, typeHandler = EnumTypehandler}, #{joinDate})
+	</insert>
+
+	<delete id="checkDeletedMembership" parameterType="map">
+		DELETE FROM CLUBMEMBERSHIP
+		WHERE CLUBID = #{param1, typeHandler = IdTypehandler} AND MEMBEREMAIL=#{param2}
+	</delete>
+
+	<insert id="checkCreatedMembership" parameterType="ClubMembership">
+		INSERT INTO CLUBMEMBERSHIP(CLUBID, MEMBEREMAIL, MEMBERNAME, ROLE, JOINDATE)
+		VALUES(#{clubId, typeHandler = IdTypehandler}, #{memberEmail}, #{memberName}, #{role, typeHandler = EnumTypehandler}, #{joinDate})
+	</insert>
+
+	<resultMap type="ClubMembership" id="CustomMembership">
+		<result column="clubId" property="clubId" typeHandler="IdTypehandler" />
+		<result column="memberName" property="memberName" />
+		<result column="memberEmail" property="memberEmail" />
+		<result column="role" property="role" typeHandler="EnumTypehandler" />
+		<result column="joinDate" property="joinDate" />
+	</resultMap>
+
+</mapper>

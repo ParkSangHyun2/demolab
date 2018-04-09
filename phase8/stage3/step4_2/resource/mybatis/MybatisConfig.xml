@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-config.dtd">
+   
+<configuration>
+	<typeAliases>
+		<typeAlias type="step1.share.domain.entity.club.TravelClub"
+			alias="TravelClub" />
+		<typeAlias type="step1.share.domain.entity.club.CommunityMember"
+			alias="CommunityMember" />
+		<typeAlias type="step1.share.domain.entity.club.ClubMembership"
+			alias="ClubMembership" />
+		<typeAlias type="step1.share.domain.entity.board.Posting"
+			alias="Posting" />
+		<typeAlias type="step1.share.domain.entity.board.SocialBoard"
+			alias="SocialBoard" />
+		<typeAlias type="step4_2.mybatis.typehandler.IdTypehandler" 
+			alias="IdTypehandler"/>
+		<typeAlias type="step4_2.mybatis.typehandler.EnumTypehandler"
+			alias="EnumTypehandler"/>
+	</typeAliases>
+	
+	<typeHandlers>
+  		<typeHandler handler="step4_2.mybatis.typehandler.IdTypehandler"/>
+  		<typeHandler handler="step4_2.mybatis.typehandler.EnumTypehandler"/>
+	</typeHandlers>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="org.mariadb.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mariadb://localhost:3306/namoosori_phase4" />
+				<property name="username" value="root" />
+				<property name="password" value="" />
+				<property name="poolMaximumActiveConnections" value="20"></property>
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="./mybatis/mapper/TravelClubMapper.xml" />
+		<mapper resource="./mybatis/mapper/MemberMapper.xml" />
+		<mapper resource="./mybatis/mapper/BoardMapper.xml" />
+		<mapper resource="./mybatis/mapper/MembershipMapper.xml" />
+		<mapper resource="./mybatis/mapper/PostingMapper.xml" />
+	</mappers>
+</configuration>

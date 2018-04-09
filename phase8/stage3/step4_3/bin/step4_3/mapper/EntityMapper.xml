@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+      "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="step1.share.domain.entity.club">
+
+	<class name="TravelClub" table="TravelClub">
+		<id name="usid" column="usid" />
+		<property name="name" column="name" />
+		<property name="intro" column="intro" />
+		<property name="foundationDay" column="foundationDay" />
+		<property name="boardId" column="boardId" />
+	</class>
+
+	<class name="CommunityMember" table="CommunityMember">
+		<id name="email" column="memberEmail" />
+		<property name="name" column="memberName" />
+		<property name="nickName" column="nickName" />
+		<property name="phoneNumber" column="phoneNumber" />
+		<property name="birthDay" column="birthDay" />
+	</class>
+
+	<class name="ClubMembership" table="ClubMembership">
+		<composite-id>
+			<key-property name="clubId" column="clubId" />
+			<key-property name="memberEmail" column="memberEmail" />
+		</composite-id>
+		<property name="memberName" column="memberName" />
+
+		<property name="role" column="role" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">step1.share.domain.entity.club.RoleInClub</param>
+				<param name="type">1</param>
+			</type>
+		</property>
+
+		<property name="joinDate" column="joinDate" />
+	</class>
+
+</hibernate-mapping>

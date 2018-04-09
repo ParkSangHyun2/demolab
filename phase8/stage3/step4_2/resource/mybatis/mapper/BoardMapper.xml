@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="step4_2.mapper.BoardMapper">
+
+	<select id="exists" parameterType="String" resultType="int">
+		SELECT CLUBID 
+		FROM SOCIALBOARD 
+		WHERE CLUBID = #{clubId, typeHandler=IdTypehandler}
+	</select>
+	
+	<insert id="write" parameterType="SocialBoard">
+		INSERT INTO SOCIALBOARD(NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID) 
+		VALUES(#{name}, #{adminEmail}, #{createDate}, #{sequence}, #{clubId, typeHandler=IdTypehandler})
+	</insert>
+	
+	<select id="read" parameterType="String" resultMap="CustomBoard">
+		SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID 
+		FROM SOCIALBOARD 
+		WHERE CLUBID = #{clubId, typeHandler=IdTypehandler}
+	</select>
+	
+	<select id="readByName" parameterType="String" resultType="Hashmap">
+		SELECT NAME, ADMINEMAIL, CREATEDATE, SEQUENCE, CLUBID 
+		FROM SOCIALBOARD 
+		WHERE NAME = #{name}
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM SOCIALBOARD 
+		WHERE CLUBID= #{clubId, typeHandler=IdTypehandler}
+	</delete>
+    
+    <update id="update" parameterType="String">
+        UPDATE SOCIALBOARD
+        SET NAME=#{name}
+        WHERE CLUBID=#{clubId, typeHandler=IdTypehandler}
+    </update>
+    
+    <resultMap type="SocialBoard" id="CustomBoard">
+    		<result column="clubId" property="clubId" typeHandler="IdTypehandler"/>
+    		<result column="name" property="name"/>
+    		<result column="adminEmail" property="adminEmail"/>
+    		<result column="createDate" property="createDate"/>
+    		<result column="sequence" property="sequence"/>
+    </resultMap>
+	
+</mapper>

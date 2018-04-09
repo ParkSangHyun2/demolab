@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="step4_2.mapper.MemberMapper">
+
+	<select id="exists" parameterType="String" resultType="String">
+		SELECT EMAIL 
+		FROM COMMUNITYMEMBER 
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<insert id="write" parameterType="CommunityMember">
+		INSERT INTO COMMUNITYMEMBER(EMAIL, NAME, PHONENUMBER) 
+		VALUES(#{email}, #{name}, #{phoneNumber})
+	</insert>
+	
+	<select id="read" parameterType="String" resultType="CommunityMember">
+		SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY 
+		FROM COMMUNITYMEMBER 
+		WHERE EMAIL = #{email}
+	</select>
+	
+	<select id="readByName" parameterType="String" resultType="CommunityMember">
+		SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY 
+		FROM COMMUNITYMEMBER 
+		WHERE NAME = #{name}
+	</select>
+	
+	<update id="update" parameterType="CommunityMember">
+		UPDATE COMMUNITYMEMBER 
+		SET NICKNAME = #{nickName}, PHONENUMBER = #{phoneNumber} , BIRTHDAY = #{birthDay} 
+		WHERE EMAIL = #{email}
+	</update>
+	
+	<delete id="delete" parameterType="String">
+		DELETE FROM COMMUNITYMEMBER 
+		WHERE EMAIL = #{email}
+	</delete>
+	
+	<select id="readAll" resultType="CommunityMember">
+	SELECT EMAIL, NAME, NICKNAME, PHONENUMBER, BIRTHDAY FROM COMMUNITYMEMBER 
+	</select>
+	
+</mapper>

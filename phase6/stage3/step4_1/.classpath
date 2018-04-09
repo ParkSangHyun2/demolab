@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/step1"/>
+	<classpathentry kind="lib" path="/Users/parksanghyun/Documents/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="/Users/parksanghyun/Documents/DB jar/mariadb-java-client-2.2.2.jar"/>
+	<classpathentry kind="lib" path="/Users/Document/Oracle Common/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/Document/Oracle Common/commons-dbcp-jmx-jdbc4-0.2-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/Document/Oracle Common/commons-pool2-2.5.0-javadoc.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
