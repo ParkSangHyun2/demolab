@@ -32,9 +32,9 @@ public class ClubFileStore implements ClubStore {
 	@Override
 	public String create(TravelClub club) {
 		// 
-		if (clubFile.exists(club.getId())) {
-			throw new MemberDuplicationException("Member already exists with email: " + club.getId()); 
-		}
+//		if (clubFile.exists(club.getId())) {
+//			throw new MemberDuplicationException("Member already exists with email: " + club.getId()); 
+//		}
 		
 		if (club instanceof AutoIdEntity) {
 			String className = TravelClub.class.getSimpleName(); 

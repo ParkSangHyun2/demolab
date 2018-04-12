@@ -1,11 +1,13 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -16,8 +18,8 @@ import com.google.gson.Gson;
 
 public class FileDbWrapper {
 	//
-	private static final String DEFAULT_DELIMETER = "||"; 
-	
+	private static final String DEFAULT_DELIMETER = "||";
+
 	private Map<String, Integer> keyIndexMap;
 	private String fileName;
 	private String delimiter;
@@ -25,17 +27,17 @@ public class FileDbWrapper {
 
 	public FileDbWrapper(String folderName, String fileName) {
 		//
-		this(folderName, fileName, DEFAULT_DELIMETER);   
+		this(folderName, fileName, DEFAULT_DELIMETER);
 	}
 
 	public FileDbWrapper(String folderName, String fileName, String delimiter) {
 		//
 		this.delimiter = delimiter;
 		this.fileName = fileName;
-		this.file = ResourceUtil.getFile("filedb", folderName, fileName); 
+		this.file = ResourceUtil.getFile("filedb", folderName, fileName);
 	}
 
-	public void setKeyIndexMap(Map<String,Integer> keyIndexMap) {
+	public void setKeyIndexMap(Map<String, Integer> keyIndexMap) {
 		//
 		this.keyIndexMap = keyIndexMap;
 	}
@@ -114,7 +116,7 @@ public class FileDbWrapper {
 		StringBuilder builder = new StringBuilder();
 		Iterator<String> keyIter = this.keyIndexMap.keySet().iterator();
 		while (keyIter.hasNext()) {
-			String keyName = keyIter.next(); 
+			String keyName = keyIter.next();
 			builder.append(callGetMethod(object, keyName)).append(getDelimiter());
 		}
 
@@ -150,9 +152,19 @@ public class FileDbWrapper {
 		return new BufferedReader(new FileReader(create()));
 	}
 
+	public RandomAccessFile requestAccessReader() throws IOException {
+		//
+		return new RandomAccessFile(this.create(), "rw");
+	}
+
 	public FileWriter requestFileWriter() throws IOException {
 		//
 		return new FileWriter(create(), true);
+	}
+	
+	public BufferedWriter requestBufferedFileWriter() throws IOException{
+		//
+		return new BufferedWriter(new FileWriter(create(), true));
 	}
 
 	public PrintWriter requestPrintWriter() throws IOException {

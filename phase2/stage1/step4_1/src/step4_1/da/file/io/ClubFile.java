@@ -8,6 +8,7 @@
 package step4_1.da.file.io;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +20,7 @@ import java.util.Map;
 import entity.club.TravelClub;
 import util.FileDbWrapper;
 
-public class ClubFile {
+public class ClubFile{
 	//
 	private static Map<String,Integer> keyIndexMap; 
 	
@@ -45,7 +46,7 @@ public class ClubFile {
 				FileConfig.getDelimiter());
 		
 		this.clubFile.setKeyIndexMap(keyIndexMap);
-		this.clubTempFile.setKeyIndexMap(keyIndexMap); 
+		this.clubTempFile.setKeyIndexMap(keyIndexMap);
 	}
 	
 	public boolean exists(String clubId) {
@@ -54,9 +55,9 @@ public class ClubFile {
         BufferedReader reader; 
         
 		try {
-	        reader = clubFile.requestReader();
-			
+	        reader = clubFile.requestReader();			
 	        String line = null; 
+	        
 			while(true) {
 				if((line = reader.readLine()) == null) {
 					break; 
@@ -82,11 +83,13 @@ public class ClubFile {
 		}
 		
 		FileWriter fileWriter;
+
 		try {
 			fileWriter = clubFile.requestFileWriter();
 			fileWriter.write(convertToStr(club)); 
 			fileWriter.write("\r\n"); 
 			fileWriter.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -305,4 +308,5 @@ public class ClubFile {
 		TravelClub readClubThree = clubFile.readLast(); 
 		System.out.println(" > read club 3: " + readClubThree); 
 	}
+
 }

@@ -11,11 +11,12 @@ package entity.board;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.AutoIdEntity;
 import entity.Entity;
 import entity.club.CommunityMember;
 import util.DateUtil;
 
-public class Posting implements Entity {
+public class Posting implements Entity, AutoIdEntity{
     //
 	private String usid;			// format - BoardId:00021
 	private String title;
@@ -24,7 +25,9 @@ public class Posting implements Entity {
 	private String writtenDate;
 	private int readCount;
 	
-	private String boardId; 
+	private String boardId;
+	
+	public static final String ID_FORMAT = "%05d"; 
 	
 	public Posting() {
 		//
@@ -134,5 +137,17 @@ public class Posting implements Entity {
 
 	public void setBoardId(String boardId) {
 		this.boardId = boardId;
+	}
+
+	@Override
+	public String getIdFormat() {
+		//
+		return ID_FORMAT;
+	}
+
+	@Override
+	public void setAutoId(String autoId) {
+		//
+		this.usid = autoId;
 	}
 }

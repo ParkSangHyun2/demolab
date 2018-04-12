@@ -28,7 +28,7 @@ public class TravelClub implements AutoIdEntity {
 	private String boardId; 
 	private List<ClubMembership> membershipList; 
 	
-	private TravelClub() {
+	public TravelClub() {
 		this.membershipList = new ArrayList<ClubMembership>(); 
 	}
 	

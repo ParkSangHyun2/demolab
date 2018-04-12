@@ -146,6 +146,7 @@
 			</tr>
 		</table>
 	</div>
+	<script src="/js/memberRequest.js"></script>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/webjars/bootstrap/3.3.4/dist/js/bootstrap.min.js"></script>

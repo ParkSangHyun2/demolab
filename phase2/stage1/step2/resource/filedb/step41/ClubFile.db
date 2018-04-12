@@ -1,1 +1,10 @@
 00001||FirstName||{"usid":"00001","name":"FirstName","intro":"FirstName_Introduce","foundationDay":"2018.03.05","membershipList":[{"clubId":"00001","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.03.05"}]}
+00002||SecondClub||{"usid":"00002","name":"SecondClub","intro":"SecondClubSecondClub","foundationDay":"2018.04.11","membershipList":[{"clubId":"00002","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00003||club3||{"usid":"00003","name":"club3","intro":"club3club3","foundationDay":"2018.04.11","membershipList":[{"clubId":"00003","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00004||club4||{"usid":"00004","name":"club4","intro":"club4club4","foundationDay":"2018.04.11","membershipList":[{"clubId":"00004","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00005||club5||{"usid":"00005","name":"club5","intro":"club5club5","foundationDay":"2018.04.11","membershipList":[{"clubId":"00005","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00006||club6||{"usid":"00006","name":"club6","intro":"club6club6","foundationDay":"2018.04.11","membershipList":[{"clubId":"00006","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00007||club7||{"usid":"00007","name":"club7","intro":"club7club7","foundationDay":"2018.04.11","membershipList":[{"clubId":"00007","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00008||club8||{"usid":"00008","name":"club8","intro":"club8club8","foundationDay":"2018.04.11","membershipList":[{"clubId":"00008","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00009||club9||{"usid":"00009","name":"club9","intro":"club9club9","foundationDay":"2018.04.11","membershipList":[{"clubId":"00009","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}
+00010||club10||{"usid":"00010","name":"club10","intro":"club10club10","foundationDay":"2018.04.11","membershipList":[{"clubId":"00010","memberEmail":"pus5684@naver.com","role":"President","joinDate":"2018.04.11"}]}

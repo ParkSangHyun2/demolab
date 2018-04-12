@@ -10,7 +10,11 @@ package step4_1.da.file;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import entity.AutoIdEntity;
 import entity.board.Posting;
+import entity.club.TravelClub;
+import step4_1.da.file.io.AutoIdFile;
+import step4_1.da.file.io.AutoIdSequence;
 import step4_1.da.file.io.PostingFile;
 import step4_1.store.PostingStore;
 import step4_1.util.MemberDuplicationException;
@@ -18,10 +22,12 @@ import step4_1.util.MemberDuplicationException;
 public class PostingFileStore implements PostingStore {
 	//
 	private PostingFile postingFile; 
+	private AutoIdFile autoIdFile;
 	
 	public PostingFileStore() {
 		//  
-		this.postingFile = new PostingFile(); 
+		this.postingFile = new PostingFile();
+		this.autoIdFile = new AutoIdFile();
 	}
 	
 	@Override
@@ -29,6 +35,17 @@ public class PostingFileStore implements PostingStore {
 		// 
 		if (postingFile.exists(posting.getId())) {
 			throw new MemberDuplicationException("Already exists: " + posting.getId()); 
+		}
+		if (posting instanceof AutoIdEntity) {
+			String className = Posting.class.getSimpleName(); 
+			
+			if(autoIdFile.read(className) == null) {
+				autoIdFile.write(new AutoIdSequence(className));  
+			}
+			AutoIdSequence autoIdSequence = autoIdFile.read(className); 
+			posting.setAutoId(String.format("%05d", autoIdSequence.nextSequence()));  
+			
+			autoIdFile.update(autoIdSequence);
 		}
 		
 		postingFile.write(posting); 

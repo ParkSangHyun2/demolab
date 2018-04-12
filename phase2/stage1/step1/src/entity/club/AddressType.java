@@ -8,12 +8,8 @@
 
 package entity.club;
 
-public enum AddressType {
+enum AddressType {
 	//
-	Home, 
-	Office
+	Home, Office
 }
 
-public String getType(){
-    return this.name();
-}
